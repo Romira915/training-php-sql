@@ -1,0 +1,16 @@
+{
+    "name": "romira/zenita",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Romira\\Zenita\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "romira"
+        }
+    ],
+    "description": "training php + sql",
+    "require": {}
+}
