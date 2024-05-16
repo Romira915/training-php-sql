@@ -12,5 +12,8 @@
         }
     ],
     "description": "training php + sql",
-    "require": {}
+    "require": {
+      "ext-pdo": "*",
+      "ext-json": "*"
+    }
 }

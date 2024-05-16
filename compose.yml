@@ -1,11 +1,17 @@
 services:
   app:
-    image: php83-dev-with-composer
+    image: Romira/zenita
     build:
       context: .
       dockerfile: ./Dockerfile
     restart: always
     working_dir: /var/www/app
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: app
     ports:
       - "8080:80"
     volumes:
