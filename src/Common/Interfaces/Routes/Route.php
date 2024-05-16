@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Romira\Zenita\Common\Interfaces\Routes;
 
+use InvalidArgumentException;
 use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
@@ -62,6 +63,13 @@ class Route
         (new HttpResponse(statusCode: 404, body: 'Not Found'))->emit();
     }
 
+    /**
+     * ルーターに登録されたルートを正規表現パターンに変換する
+     * Example: /posts/{post_id} -> /^\/posts\/(?P<post_id>[a-zA-Z0-9_-]+)$/u
+     *
+     * @param string $route
+     * @return string
+     */
     private function createPattern(string $route): string
     {
         $pattern = preg_quote($route, '/');
@@ -74,6 +82,16 @@ class Route
 
     private function createHttpRequest(): HttpRequest
     {
+        /** @var ?array $json */
+        $json = null;
+        if (isset($_SERVER['CONTENT_TYPE']) && preg_match("#\Aapplication/json#ui", $_SERVER['CONTENT_TYPE'])) {
+            $json = file_get_contents('php://input');
+            $json = json_decode($json, true);
+            if ($json === false) {
+                throw new InvalidArgumentException("content-type is application/json. but parse failed");
+            }
+        }
+
         return new HttpRequest(
             $_SERVER['REQUEST_METHOD'],
             $_SERVER['REQUEST_URI'],
@@ -83,7 +101,8 @@ class Route
             $_FILES,
             $_SERVER,
             $_COOKIE,
-            $_ENV
+            $_ENV,
+            $json
         );
     }
 }

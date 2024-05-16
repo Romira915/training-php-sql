@@ -6,7 +6,7 @@ namespace Romira\Zenita\Common\Infrastructure\Http;
 
 class HttpResponse
 {
-    private int $statusCode;
+    private int $statusCode = 200;
     private array $headers = [];
     private string $body = '';
 
@@ -37,6 +37,7 @@ class HttpResponse
         http_response_code($this->getStatusCode());
 
         foreach ($this->getHeaders() as $header => $value) {
+            // header injection 対策
             $header = str_replace(["\r", "\n"], '', $header);
             $value = str_replace(["\r", "\n"], '', $value);
 
