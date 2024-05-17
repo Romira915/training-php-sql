@@ -9,7 +9,6 @@ use Exception;
 use PDO;
 use Romira\Zenita\Feature\Article\Domain\Entities\Article;
 use Romira\Zenita\Feature\Article\Domain\Repositories\ArticleRepositoryInterface;
-use Romira\Zenita\Feature\Article\Domain\ValueObjects\ArticleTitle;
 
 class ArticleRepository implements ArticleRepositoryInterface
 {
@@ -36,7 +35,7 @@ class ArticleRepository implements ArticleRepositoryInterface
 
         $row = $statement->fetchAll(PDO::FETCH_ASSOC);
         if ($row === false) {
-            return null;
+            return [];
         }
 
         $result = [];
@@ -44,7 +43,7 @@ class ArticleRepository implements ArticleRepositoryInterface
             $result[] = new Article(
                 id: (int)$r['id'],
                 user_id: (int)$r['user_id'],
-                title: new ArticleTitle($r['title']),
+                title: $r['title'],
                 body: $r['body'],
                 thumbnail_url: $r['thumbnail_url'],
                 image_url_list: [],
@@ -61,7 +60,8 @@ class ArticleRepository implements ArticleRepositoryInterface
      * @param int $user_id
      * @return int article_id
      */
-    public static function createArticle(PDO $pdo, int $user_id): int {
+    public static function createArticle(PDO $pdo, int $user_id): int
+    {
         $statement = $pdo->prepare('
         INSERT INTO articles (id, user_id) VALUES ((
             SELECT COALESCE(MAX(id), 0) + 1 FROM articles

@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Romira\Zenita\Feature\Article\Domain\Entities;
 
 use DateTimeImmutable;
-use Romira\Zenita\Feature\Article\Domain\ValueObjects\ArticleTitle;
 
 class Article
 {
     private int $id;
     private int $user_id;
-    private ArticleTitle $title;
+    private string $title;
     private string $body;
     private string $thumbnail_url;
     /** @var array<string> */
@@ -22,7 +21,7 @@ class Article
     public function __construct(
         int               $id,
         int               $user_id,
-        ArticleTitle      $title,
+        string            $title,
         string            $body,
         string            $thumbnail_url,
         array             $image_url_list,
@@ -52,7 +51,7 @@ class Article
 
     public function getTitle(): string
     {
-        return $this->title->getTitle();
+        return $this->title;
     }
 
     public function getBody(): string
