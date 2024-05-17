@@ -25,6 +25,9 @@ class GetIndex implements HandlerInterface
     {
         $limit = $request->get['limit'] ?? self::ARTICLE_LIMIT;
         $limit = (int)$limit;
+        if ($limit < 1) {
+            return new HttpResponse(statusCode: 400, body: 'limit must be greater than 0');
+        }
 
         $pdo = PostgresqlConnection::connect();
         $articleRepository = new ArticleRepository();
