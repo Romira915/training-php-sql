@@ -20,15 +20,16 @@ class Article
     private DateTimeImmutable $updated_at;
 
     public function __construct(
-        int $id,
-        int $user_id,
-        ArticleTitle $title,
-        string $body,
-        string $thumbnail_url,
-        array $image_url_list,
+        int               $id,
+        int               $user_id,
+        ArticleTitle      $title,
+        string            $body,
+        string            $thumbnail_url,
+        array             $image_url_list,
         DateTimeImmutable $created_at,
         DateTimeImmutable $updated_at
-    ) {
+    )
+    {
         $this->id = $id;
         $this->user_id = $user_id;
         $this->title = $title;
@@ -57,6 +58,11 @@ class Article
     public function getBody(): string
     {
         return $this->body;
+    }
+
+    public function setThumbnailUrl(string $thumbnail_url): void
+    {
+        $this->thumbnail_url = $thumbnail_url;
     }
 
     public function getThumbnailUrl(): string
