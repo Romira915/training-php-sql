@@ -4,17 +4,10 @@ declare(strict_types=1);
 
 namespace Romira\Zenita\Common\Infrastructure\Http;
 
-class HttpResponse
+readonly class HttpResponse
 {
-    private int $statusCode = 200;
-    private array $headers = [];
-    private string $body = '';
-
-    public function __construct(int $statusCode = 200, array $headers = [], string $body = '')
+    public function __construct(private int $statusCode = 200, private array $headers = [], private string $body = '')
     {
-        $this->statusCode = $statusCode;
-        $this->headers = $headers;
-        $this->body = $body;
     }
 
     public function getStatusCode(): int
@@ -32,7 +25,7 @@ class HttpResponse
         return $this->body;
     }
 
-    public function emit()
+    public function emit(): void
     {
         http_response_code($this->getStatusCode());
 
