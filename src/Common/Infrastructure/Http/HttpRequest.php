@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Romira\Zenita\Common\Infrastructure\Http;
 
+use InvalidArgumentException;
+
 class HttpRequest
 {
     public string $method;
@@ -27,7 +29,7 @@ class HttpRequest
         array  $server = [],
         array  $cookie = [],
         array  $env = [],
-        ?array  $jsonData = null
+        ?array $jsonData = null
     )
     {
         $this->method = $method;
@@ -39,6 +41,14 @@ class HttpRequest
         $this->server = $server;
         $this->cookie = $cookie;
         $this->env = $env;
-        $this->jsonData = $jsonData;
+
+        if (!is_null($jsonData)) {
+            $this->jsonData = $jsonData;
+        } else if (isset($this->server["CONTENT_TYPE"]) && preg_match("|\Aapplication/json|ui", $this->server["CONTENT_TYPE"])) {
+            $this->jsonData = json_decode(file_get_contents('php://input'), true);
+            if ($this->jsonData === false) {
+                throw new InvalidArgumentException("content-type is application/json. but parse failed");
+            }
+        }
     }
 }

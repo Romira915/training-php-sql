@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Romira\Zenita\Common\Interfaces\Handlers;
 
 use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;

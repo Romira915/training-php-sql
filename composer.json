@@ -14,6 +14,7 @@
     "description": "training php + sql",
     "require": {
       "ext-pdo": "*",
-      "ext-json": "*"
+      "ext-json": "*",
+      "ext-mbstring": "*"
     }
 }
