@@ -17,10 +17,10 @@ class ArticleRepository implements ArticleRepositoryInterface
      *
      * @param PDO $pdo
      * @param int $limit
-     * @return array<Article>|null
+     * @return array<Article>
      * @throws Exception
      */
-    public static function fetchExcludeImageUrlList(PDO $pdo, int $limit): ?array
+    public static function getExcludeImageUrlList(PDO $pdo, int $limit): array
     {
         $statement = $pdo->prepare('
         SELECT a.id, ad.user_id, ad.title, ad.body, ai.image_url AS thumbnail_url, ad.created_at, ad.updated_at

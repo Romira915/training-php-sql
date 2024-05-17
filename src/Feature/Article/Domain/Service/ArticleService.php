@@ -18,6 +18,6 @@ class ArticleService
      */
     public static function getArticle(PDO $pdo, ArticleRepositoryInterface $articleRepository, int $limit): ?array
     {
-        return $articleRepository::fetchExcludeImageUrlList($pdo, $limit);
+        return $articleRepository::getExcludeImageUrlList($pdo, $limit);
     }
 }
