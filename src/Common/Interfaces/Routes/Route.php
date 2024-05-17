@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Romira\Zenita\Common\Interfaces\Routes;
 
+use Exception;
 use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
@@ -43,6 +44,10 @@ class Route
         return $this;
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function run(): void
     {
         $request_method = $this->httpRequest->method;
