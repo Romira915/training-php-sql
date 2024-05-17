@@ -14,9 +14,9 @@ class ArticleService
      * @param PDO $pdo
      * @param ArticleRepositoryInterface $articleRepository
      * @param int $limit
-     * @return array<Article>|null
+     * @return array<Article>
      */
-    public static function getArticle(PDO $pdo, ArticleRepositoryInterface $articleRepository, int $limit): ?array
+    public static function getArticle(PDO $pdo, ArticleRepositoryInterface $articleRepository, int $limit): array
     {
         return $articleRepository::getExcludeImageUrlList($pdo, $limit);
     }

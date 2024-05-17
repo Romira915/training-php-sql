@@ -15,9 +15,9 @@ class GetArticleListAction
      * @param PDO $pdo
      * @param ArticleRepositoryInterface $articleRepository
      * @param int $limit
-     * @return array<Article>|null
+     * @return array<Article>
      */
-    public static function run(PDO $pdo, ArticleRepositoryInterface $articleRepository, int $limit): ?array
+    public static function run(PDO $pdo, ArticleRepositoryInterface $articleRepository, int $limit): array
     {
         return ArticleService::getArticle($pdo, $articleRepository, $limit);
     }

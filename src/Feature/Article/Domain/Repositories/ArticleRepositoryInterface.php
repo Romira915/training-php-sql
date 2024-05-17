@@ -12,9 +12,9 @@ interface ArticleRepositoryInterface
     /**
      * @param PDO $pdo
      * @param int $limit
-     * @return array<Article>|null
+     * @return array<Article>
      */
-    public static function getExcludeImageUrlList(PDO $pdo, int $limit): ?array;
+    public static function getExcludeImageUrlList(PDO $pdo, int $limit): array;
 
     /**
      * @param PDO $pdo
