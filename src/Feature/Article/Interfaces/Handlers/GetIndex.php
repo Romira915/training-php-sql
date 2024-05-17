@@ -24,6 +24,7 @@ class GetIndex implements HandlerInterface
     public static function handle(HttpRequest $request, array $matches): HttpResponse
     {
         $limit = $request->get['limit'] ?? self::ARTICLE_LIMIT;
+        $limit = (int)$limit;
 
         $pdo = PostgresqlConnection::connect();
         $articleRepository = new ArticleRepository();
