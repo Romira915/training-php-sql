@@ -79,7 +79,7 @@ class Route
      * @param string $route
      * @return string
      */
-    private function createPattern(string $route): string
+    public function createPattern(string $route): string
     {
         $pattern = preg_quote($route, '/');
         $pattern = preg_replace_callback('/\\\{(\w+)\\\}/', function ($matches) {
