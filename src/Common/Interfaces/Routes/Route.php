@@ -46,7 +46,7 @@ class Route
     public function run(): void
     {
         $request_method = $this->httpRequest->method;
-        $request_uri = $this->httpRequest->uri;
+        $request_uri = parse_url($this->httpRequest->uri, PHP_URL_PATH);
 
         /**
          * @var string $route

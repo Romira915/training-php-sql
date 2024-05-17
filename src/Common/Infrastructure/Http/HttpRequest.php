@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Romira\Zenita\Common\Infrastructure\Http;
 
 use InvalidArgumentException;
+use Romira\Zenita\Utils\Collection\Collection;
 
 class HttpRequest
 {
@@ -35,8 +36,8 @@ class HttpRequest
         $this->method = $method;
         $this->uri = $uri;
         $this->session = $session;
-        $this->post = $post;
-        $this->get = $get;
+        $this->post = Collection::castNumbers($post);
+        $this->get = Collection::castNumbers($get);
         $this->files = $files;
         $this->server = $server;
         $this->cookie = $cookie;

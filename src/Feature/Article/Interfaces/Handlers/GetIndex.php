@@ -23,10 +23,12 @@ class GetIndex implements HandlerInterface
      */
     public static function handle(HttpRequest $request, array $matches): HttpResponse
     {
+        $limit = $request->get['limit'] ?? self::ARTICLE_LIMIT;
+
         $pdo = PostgresqlConnection::connect();
         $articleRepository = new ArticleRepository();
 
-        $articles = GetArticleListAction::run($pdo, $articleRepository, self::ARTICLE_LIMIT);
+        $articles = GetArticleListAction::run($pdo, $articleRepository, $limit);
         foreach ($articles as $article) {
             $article->setThumbnailUrl(Config::getImageBaseUrl() . $article->getThumbnailUrl());
         }
