@@ -1,0 +1,47 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+li {
+    list-style-type: none;
+}
+
+ul {
+    padding: 0;
+}
+
+.root {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.main {
+
+}
+
+.article-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .article-form__label-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .article-form__thumbnail-input {
+
+    }
+
+    .article-form__post-button {
+        width: fit-content;
+        padding: 4px 8px;
+        align-self: center;
+    }
+}
