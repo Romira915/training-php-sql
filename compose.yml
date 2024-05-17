@@ -12,6 +12,7 @@ services:
       POSTGRES_USER: app
       POSTGRES_PASSWORD: password
       POSTGRES_DB: app
+      IMAGE_BASE_URL: http://localhost:8080
     ports:
       - "8080:80"
     volumes:

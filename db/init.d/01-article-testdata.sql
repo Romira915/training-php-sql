@@ -1,4 +1,3 @@
--- Create some test data for the articles table article_id for 1 ~ 100
 DO
 $$
     DECLARE
