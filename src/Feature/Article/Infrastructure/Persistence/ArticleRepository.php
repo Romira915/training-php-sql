@@ -74,8 +74,46 @@ class ArticleRepository implements ArticleRepositoryInterface
         return (int)$row['id'];
     }
 
-    public static function createPublishedArticle(PDO $pdo, Article $article): void
+    public static function createPublishedArticle(PDO $pdo, int $article_id, int $user_id): void
     {
-        // TODO: Implement createPublishedArticle() method.
+        $statement = $pdo->prepare('
+        INSERT INTO article_published (article_id, user_id) VALUES (:article_id, :user_id)
+        ');
+        $statement->execute([
+            'article_id' => $article_id,
+            'user_id' => $user_id
+        ]);
+    }
+
+    public static function createArticleDetail(PDO $pdo, Article $article, int $thumbnail_id): void
+    {
+        $statement = $pdo->prepare('
+        INSERT INTO article_detail (article_id, user_id, title, body, thumbnail_id)
+        VALUES (:article_id, :user_id, :title, :body, :thumbnail_id)
+        ');
+        $statement->execute([
+            'article_id' => $article->getId(),
+            'user_id' => $article->getUserId(),
+            'title' => $article->getTitle(),
+            'body' => $article->getBody(),
+            'thumbnail_id' => $thumbnail_id
+        ]);
+    }
+
+    public static function createArticleImage(PDO $pdo, int $article_id, int $user_id, string $image_url): int
+    {
+        $statement = $pdo->prepare('
+        INSERT INTO article_images (article_id, user_id, image_url)
+        VALUES (:article_id, :user_id, :image_url) RETURNING id
+        ');
+        $statement->execute([
+            'article_id' => $article_id,
+            'user_id' => $user_id,
+            'image_url' => $image_url
+        ]);
+
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+        return (int)$row['id'];
     }
 }

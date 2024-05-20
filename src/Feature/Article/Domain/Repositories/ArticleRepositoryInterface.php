@@ -23,5 +23,16 @@ interface ArticleRepositoryInterface
      */
     public static function createArticle(PDO $pdo, int $user_id): int;
 
-    public static function createPublishedArticle(PDO $pdo, Article $article): void;
+    public static function createPublishedArticle(PDO $pdo, int $article_id, int $user_id): void;
+
+    public static function createArticleDetail(PDO $pdo, Article $article, int $thumbnail_id): void;
+
+    /**
+     * @param PDO $pdo
+     * @param int $article_id
+     * @param int $user_id
+     * @param string $image_url
+     * @return int image_id
+     */
+    public static function createArticleImage(PDO $pdo, int $article_id, int $user_id, string $image_url): int;
 }
