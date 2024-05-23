@@ -7,11 +7,11 @@ namespace Romira\Zenita\Feature\Article\Infrastructure\Persistence;
 use PDO;
 use Romira\Zenita\Feature\Article\Domain\Entities\ArticleImage;
 use Romira\Zenita\Feature\Article\Domain\Entities\PublishedArticle;
-use Romira\Zenita\Feature\Article\Domain\Repositories\ArticleRepositoryInterface;
+use Romira\Zenita\Feature\Article\Domain\Repositories\PublishedArticleRepositoryInterface;
 
-class ArticleRepository implements ArticleRepositoryInterface
+class PublishedPublishedArticleRepository implements PublishedArticleRepositoryInterface
 {
-    public static function savePublishedArticle(PDO $pdo, PublishedArticle $article): PublishedArticle
+    public static function save(PDO $pdo, PublishedArticle $article): PublishedArticle
     {
         $article_id = self::createArticle($pdo, $article->getUserId());
         self::createPublishedArticle($pdo, $article_id, $article->getUserId());

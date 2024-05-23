@@ -7,7 +7,7 @@ namespace Romira\Zenita\Feature\Article\Domain\Repositories;
 use PDO;
 use Romira\Zenita\Feature\Article\Domain\Entities\PublishedArticle;
 
-interface ArticleRepositoryInterface
+interface PublishedArticleRepositoryInterface
 {
-    public static function savePublishedArticle(PDO $pdo, PublishedArticle $article): PublishedArticle;
+    public static function save(PDO $pdo, PublishedArticle $article): PublishedArticle;
 }
