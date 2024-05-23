@@ -16,6 +16,7 @@
     "ext-pdo": "*",
     "ext-json": "*",
     "ext-mbstring": "*",
-    "monolog/monolog": "*"
+    "monolog/monolog": "*",
+    "ext-exif": "*"
   }
 }
