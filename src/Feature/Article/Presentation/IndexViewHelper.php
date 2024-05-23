@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Romira\Zenita\Feature\Article\Presentation;
 
 use Romira\Zenita\Common\Presentation\ViewHelper;
-use Romira\Zenita\Feature\Article\Application\DTO\PublishedArticleDTO;
+use Romira\Zenita\Feature\Article\Application\DTO\TopPagePublishedArticleSummaryDTO;
 
 class IndexViewHelper extends ViewHelper
 {
-    /** @var array<PublishedArticleDTO> */
+    /** @var array<TopPagePublishedArticleSummaryDTO> */
     private array $articles;
 
     public function __construct(array $articles)
@@ -80,7 +80,7 @@ class IndexViewHelper extends ViewHelper
         return '<ul class="articles">' . $articlesHtml . '</ul>';
     }
 
-    private function createArticleElement(PublishedArticleDTO $article): string
+    private function createArticleElement(TopPagePublishedArticleSummaryDTO $article): string
     {
         return '
             <li>

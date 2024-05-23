@@ -6,7 +6,7 @@ namespace Romira\Zenita\Feature\Article\Application\DTO;
 
 use Romira\Zenita\Config\Config;
 
-readonly class PublishedArticleDTO
+readonly class TopPagePublishedArticleSummaryDTO
 {
     public string $thumbnail_url;
 
