@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Romira\Zenita\Feature\Article\Domain\Entities;
 
-use DateTimeImmutable;
+use Romira\Zenita\Feature\Article\Domain\Exception\InvalidImageLimitException;
 
 class PublishedArticle
 {
+    const int MAX_IMAGES = 20;
+
+    /**
+     * @throws InvalidImageLimitException
+     */
     public function __construct(
         private int          $user_id,
         private string       $title,
@@ -18,6 +23,7 @@ class PublishedArticle
         private ?int         $id = null,
     )
     {
+        $this->setImages($images);
     }
 
     public function getId(): int|null
@@ -45,18 +51,22 @@ class PublishedArticle
         return $this->thumbnail;
     }
 
+    /**
+     * @param array<ArticleImage> $images
+     * @return void
+     * @throws InvalidImageLimitException
+     */
+    public function setImages(array $images): void
+    {
+        if (count($images) > self::MAX_IMAGES) {
+            throw new InvalidImageLimitException('画像のアップロード数は最大' . self::MAX_IMAGES . '枚までです。');
+        }
+
+        $this->images = $images;
+    }
+
     public function getImages(): array
     {
         return $this->images;
-    }
-
-    public function getCreatedAt(): DateTimeImmutable
-    {
-        return $this->created_at;
-    }
-
-    public function getUpdatedAt(): DateTimeImmutable
-    {
-        return $this->updated_at;
     }
 }
