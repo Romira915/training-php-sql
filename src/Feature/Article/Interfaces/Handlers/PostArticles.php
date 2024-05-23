@@ -14,6 +14,8 @@ use Romira\Zenita\Feature\Article\Application\UseCases\CreatePublishArticleUseCa
 use Romira\Zenita\Feature\Article\Infrastructure\FileStorage\ImageStorage;
 use Romira\Zenita\Feature\Article\Infrastructure\Persistence\PublishedPublishedArticleRepository;
 use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidUploadImageException;
+use Romira\Zenita\Feature\Article\Interfaces\Validator\BodyValidator;
+use Romira\Zenita\Feature\Article\Interfaces\Validator\TitleValidator;
 use Romira\Zenita\Feature\Article\Interfaces\Validator\UploadImageValidator;
 use Romira\Zenita\Utils\Logger\LoggerFactory;
 
@@ -38,11 +40,17 @@ class PostArticles implements HandlerInterface
             return new HttpResponse(statusCode: 400, body: "Invalid Upload Image");
         }
 
+        $title = $request->post['title'] ?? '';
+        $body = $request->post['body'] ?? '';
+        if (!TitleValidator::validate($title) || !BodyValidator::validate($body)) {
+            return new HttpResponse(statusCode: 400, body: 'Invalid title or body');
+        }
+
         $pdo = PostgresqlConnection::connect();
         $articleRepository = new PublishedPublishedArticleRepository();
         $imageStorage = new ImageStorage();
 
-        CreatePublishArticleUseCase::run($request, $pdo, $articleRepository, $imageStorage);
+        CreatePublishArticleUseCase::run($pdo, $articleRepository, $imageStorage, $request->server['DOCUMENT_ROOT'], $title, $body, $image['tmp_name']);
 
         return new HttpResponse(statusCode: 302, headers: ['location' => '/']);
     }
