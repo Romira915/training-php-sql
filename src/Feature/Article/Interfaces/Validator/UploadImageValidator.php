@@ -12,20 +12,23 @@ class UploadImageValidator
     const array ALLOWED_MIME_TYPES = [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF];
 
     /**
-     * @throws InvalidUploadImageException
+     * @param array $file
+     * @return InvalidUploadImageException|null
      */
-    public static function validate(array $file): void
+    public static function validate(array $file): InvalidUploadImageException|null
     {
         if ($file['error'] !== UPLOAD_ERR_OK) {
-            throw new InvalidUploadImageException('File upload error. upload error code: ' . $file['error']);
+            return new InvalidUploadImageException('File upload error. upload error code: ' . $file['error']);
         }
 
         if ($file['size'] > self::MAX_FILE_SIZE) {
-            throw new InvalidUploadImageException('File size too large');
+            return new InvalidUploadImageException('File size too large');
         }
 
         if (!in_array(exif_imagetype($file['tmp_name']), self::ALLOWED_MIME_TYPES)) {
-            throw new InvalidUploadImageException('Invalid file type');
+            return new InvalidUploadImageException('Invalid file type');
         }
+
+        return null;
     }
 }

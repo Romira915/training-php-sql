@@ -10,8 +10,9 @@ use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Persistence\PostgresqlConnection;
 use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
+use Romira\Zenita\Feature\Article\Application\DTO\CreatePublishedArticleDTO;
 use Romira\Zenita\Feature\Article\Application\UseCases\CreatePublishArticleUseCase;
-use Romira\Zenita\Feature\Article\Infrastructure\FileStorage\ImageStorage;
+use Romira\Zenita\Feature\Article\Infrastructure\FileStorage\ImageLocalStorage;
 use Romira\Zenita\Feature\Article\Infrastructure\Persistence\PublishedPublishedArticleRepository;
 use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidUploadImageException;
 use Romira\Zenita\Feature\Article\Interfaces\Validator\BodyValidator;
@@ -33,9 +34,8 @@ class PostArticles implements HandlerInterface
         }
         $image = $request->files['thumbnail'];
 
-        try {
-            UploadImageValidator::validate($image);
-        } catch (InvalidUploadImageException $e) {
+        $e = UploadImageValidator::validate($image);
+        if ($e instanceof InvalidUploadImageException) {
             $logger->info('File: ' . $e->getFile() . ' Line: ' . $e->getLine() . ' Message: ' . $e->getMessage(), ['exception' => $e]);
             return new HttpResponse(statusCode: 400, body: "Invalid Upload Image");
         }
@@ -48,9 +48,10 @@ class PostArticles implements HandlerInterface
 
         $pdo = PostgresqlConnection::connect();
         $articleRepository = new PublishedPublishedArticleRepository();
-        $imageStorage = new ImageStorage();
+        $imageStorage = new ImageLocalStorage($request->server['DOCUMENT_ROOT']);
+        $createPublishedArticleDTO = new CreatePublishedArticleDTO(user_id: 1, title: $title, body: $body, thumbnail_image_path: $image['tmp_name']);
 
-        CreatePublishArticleUseCase::run($pdo, $articleRepository, $imageStorage, $request->server['DOCUMENT_ROOT'], $title, $body, $image['tmp_name']);
+        CreatePublishArticleUseCase::run($pdo, $articleRepository, $imageStorage, $createPublishedArticleDTO);
 
         return new HttpResponse(statusCode: 302, headers: ['location' => '/']);
     }
