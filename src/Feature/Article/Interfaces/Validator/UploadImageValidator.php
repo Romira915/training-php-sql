@@ -8,7 +8,7 @@ use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidUploadImageExcepti
 
 class UploadImageValidator
 {
-    const int MAX_FILE_SIZE = 1024 * 1024 * 50; // 50MiB
+    const int MAX_FILE_SIZE = 1024 * 1024 * 10; // 10MiB
     const array ALLOWED_MIME_TYPES = [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF];
 
     /**
@@ -17,7 +17,7 @@ class UploadImageValidator
     public static function validate(array $file): void
     {
         if ($file['error'] !== UPLOAD_ERR_OK) {
-            throw new InvalidUploadImageException('File upload error');
+            throw new InvalidUploadImageException('File upload error. upload error code: ' . $file['error']);
         }
 
         if ($file['size'] > self::MAX_FILE_SIZE) {

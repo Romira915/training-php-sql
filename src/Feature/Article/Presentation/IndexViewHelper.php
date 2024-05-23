@@ -51,6 +51,7 @@ class IndexViewHelper extends ViewHelper
     {
         return '
             <form class="article-form" action="/articles" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
                 <div class="article-form__label-wrapper">
                     <label for="title" >タイトル</label>
                     <input type="text" id="title" name="title" maxlength="191" required>
