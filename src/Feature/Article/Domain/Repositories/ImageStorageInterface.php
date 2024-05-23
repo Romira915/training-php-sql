@@ -11,5 +11,5 @@ interface ImageStorageInterface
      *
      * @throws InvalidUploadImageException
      */
-    public static function moveUploadedFileToPublic(string $tmpName): string;
+    public static function moveUploadedFileToPublic(string $rootDir, string $tmpName): string;
 }

@@ -23,9 +23,4 @@ class Config
     {
         return getenv('IMAGE_BASE_URL') ? getenv('IMAGE_BASE_URL') : 'http://localhost:8080';
     }
-
-    public static function getDocumentRoot(): string
-    {
-        return $_SERVER['DOCUMENT_ROOT'];
-    }
 }

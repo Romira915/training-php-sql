@@ -14,7 +14,7 @@ use Romira\Zenita\Feature\Article\Domain\Repositories\ImageStorageInterface;
 use Romira\Zenita\Feature\Article\Domain\Repositories\PublishedArticleRepositoryInterface;
 use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidUploadImageException;
 
-class CreateArticleAction
+class CreatePublishArticleUseCase
 {
 
     /**
@@ -25,7 +25,7 @@ class CreateArticleAction
         $title = $request->post['title'];
         $body = $request->post['body'];
 
-        $image_path = Config::IMAGE_PATH_PREFIX . $imageStorage::moveUploadedFileToPublic($request->files['thumbnail']['tmp_name']);
+        $image_path = Config::IMAGE_PATH_PREFIX . $imageStorage::moveUploadedFileToPublic($request->server['DOCUMENT_ROOT'], $request->files['thumbnail']['tmp_name']);
         $thumbnail = new ArticleImage(user_id: 1, image_path: $image_path);
         $article = new PublishedArticle(
             user_id: 1,

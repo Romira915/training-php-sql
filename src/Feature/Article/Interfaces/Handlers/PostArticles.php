@@ -10,7 +10,7 @@ use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Persistence\PostgresqlConnection;
 use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
-use Romira\Zenita\Feature\Article\Application\UseCases\CreateArticleAction;
+use Romira\Zenita\Feature\Article\Application\UseCases\CreatePublishArticleUseCase;
 use Romira\Zenita\Feature\Article\Infrastructure\FileStorage\ImageStorage;
 use Romira\Zenita\Feature\Article\Infrastructure\Persistence\PublishedPublishedArticleRepository;
 use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidUploadImageException;
@@ -42,7 +42,7 @@ class PostArticles implements HandlerInterface
         $articleRepository = new PublishedPublishedArticleRepository();
         $imageStorage = new ImageStorage();
 
-        CreateArticleAction::run($request, $pdo, $articleRepository, $imageStorage);
+        CreatePublishArticleUseCase::run($request, $pdo, $articleRepository, $imageStorage);
 
         return new HttpResponse(statusCode: 302, headers: ['location' => '/']);
     }
