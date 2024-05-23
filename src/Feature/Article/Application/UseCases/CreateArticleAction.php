@@ -6,6 +6,7 @@ namespace Romira\Zenita\Feature\Article\Application\UseCases;
 
 use PDO;
 use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
+use Romira\Zenita\Config\Config;
 use Romira\Zenita\Feature\Article\Domain\Entities\ArticleImage;
 use Romira\Zenita\Feature\Article\Domain\Entities\PublishedArticle;
 use Romira\Zenita\Feature\Article\Domain\Exception\InvalidImageLimitException;
@@ -15,7 +16,6 @@ use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidUploadImageExcepti
 
 class CreateArticleAction
 {
-    const string IMAGE_PATH_PREFIX = '/images/';
 
     /**
      * @throws InvalidUploadImageException|InvalidImageLimitException
@@ -25,7 +25,7 @@ class CreateArticleAction
         $title = $request->post['title'];
         $body = $request->post['body'];
 
-        $image_path = self::IMAGE_PATH_PREFIX . $imageStorage::moveUploadedFileToPublic($request->files['thumbnail']['tmp_name']);
+        $image_path = Config::IMAGE_PATH_PREFIX . $imageStorage::moveUploadedFileToPublic($request->files['thumbnail']['tmp_name']);
         $thumbnail = new ArticleImage(user_id: 1, image_path: $image_path);
         $article = new PublishedArticle(
             user_id: 1,

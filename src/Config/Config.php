@@ -6,6 +6,8 @@ namespace Romira\Zenita\Config;
 
 class Config
 {
+    const string IMAGE_PATH_PREFIX = '/images/';
+
     public static function getDatabaseConfig(): array
     {
         return [
