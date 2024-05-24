@@ -24,22 +24,28 @@ readonly class ArticleDetailQueryService
     public function getArticleDetail(int $article_id, int $user_id): PublishedArticleDetailPageDTO
     {
         $statement = $this->pdo->prepare('
-            SELECT
-                ap.article_id,
-                ap.user_id,
-                ad.title,
-                ad.body,
-                ai.image_path,
-                ap.created_at,
-                ad.updated_at
-            FROM
-                article_detail AS ad
-            JOIN articles AS a ON ad.article_id = a.id
-            JOIN article_published AS ap ON ad.article_id = ap.article_id
-            JOIN article_images AS ai ON ad.thumbnail_id = ai.id
-            WHERE
-                ap.article_id = :article_id
-                AND ap.user_id = :user_id
+            SELECT ap.article_id,
+                   ap.user_id,
+                   ad.title,
+                   ad.body,
+                   tnai.image_path         AS thumbnail_path,
+                   json_agg(ai.image_path) AS image_path_list,
+                   ap.created_at,
+                   ad.updated_at
+            FROM article_detail AS ad
+                     JOIN articles AS a ON ad.article_id = a.id
+                     JOIN article_published AS ap ON ad.article_id = ap.article_id
+                     JOIN article_images AS tnai ON ad.thumbnail_id = tnai.id
+                     JOIN article_images AS ai ON ad.article_id = ai.article_id
+            WHERE ap.article_id = :article_id
+              AND ap.user_id = :user_id
+            GROUP BY ap.article_id,
+                     ap.user_id,
+                     ad.title,
+                     ad.body,
+                     tnai.image_path,
+                     ap.created_at,
+                     ad.updated_at
         ');
         $statement->execute([
             'article_id' => $article_id,
@@ -48,7 +54,12 @@ readonly class ArticleDetailQueryService
 
         $row = $statement->fetch(PDO::FETCH_ASSOC);
 
-        $image_url_list = $this->getArticleImageUrlListByArticleIdAndUserId($article_id, $user_id);
+        /** @var array<string> $image_path_list */
+        $image_path_list = json_decode($row['image_path_list'], true);
+        $image_url_list = [];
+        foreach ($image_path_list as $image_path) {
+            $image_url_list[] = Config::getImageBaseUrl() . $image_path;
+        }
 
         return new PublishedArticleDetailPageDTO(
             article_id: (int)$row['article_id'],
@@ -60,40 +71,5 @@ readonly class ArticleDetailQueryService
             created_at: $row['created_at'],
             updated_at: $row['updated_at'],
         );
-    }
-
-    /**
-     * @param int $article_id
-     * @param int $user_id
-     * @return string[] image url list
-     */
-    public function getArticleImageUrlListByArticleIdAndUserId(int $article_id, int $user_id): array
-    {
-        $statement = $this->pdo->prepare('
-            SELECT
-                ai.image_path
-            FROM
-                article_images AS ai
-            JOIN article_published AS ap ON ai.article_id = ap.article_id
-            WHERE
-                ap.article_id = :article_id
-                AND ap.user_id = :user_id
-        ');
-        $statement->execute([
-            'article_id' => $article_id,
-            'user_id' => $user_id,
-        ]);
-
-        $row = $statement->fetchAll(PDO::FETCH_ASSOC);
-        if (!$row) {
-            return [];
-        }
-
-        $result = [];
-        foreach ($row as $r) {
-            $result[] = Config::getImageBaseUrl() . $r['image_path'];
-        }
-
-        return $result;
     }
 }
