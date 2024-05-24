@@ -6,8 +6,8 @@ namespace Romira\Zenita;
 
 use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Interfaces\Routes\Route;
-use Romira\Zenita\Feature\Article\Interfaces\Handlers\GetArticlesId;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\GetIndex;
+use Romira\Zenita\Feature\Article\Interfaces\Handlers\GetUsersIdArticlesId;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostArticles;
 
 
@@ -21,7 +21,7 @@ class Main
         $httpRequest = self::createHttpRequest();
         $route = new Route($httpRequest);
 
-        $route->get('/', new GetIndex())->post('/articles', new PostArticles())->get('/articles/{id}', new GetArticlesId());
+        $route->get('/', new GetIndex())->post('/articles', new PostArticles())->get('/users/{user_id}/articles/{article_id}', new GetUsersIdArticlesId());
 
         $route->run();
     }
