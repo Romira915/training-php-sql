@@ -9,9 +9,7 @@ use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Persistence\PostgresqlConnection;
 use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
-use Romira\Zenita\Config\Config;
-use Romira\Zenita\Feature\Article\Application\UseCases\GetArticleListAction;
-use Romira\Zenita\Feature\Article\Infrastructure\Persistence\ArticleRepository;
+use Romira\Zenita\Feature\Article\Infrastructure\QueryServices\ArticleSummaryQueryService;
 use Romira\Zenita\Feature\Article\Presentation\IndexViewHelper;
 
 class GetIndex implements HandlerInterface
@@ -30,12 +28,9 @@ class GetIndex implements HandlerInterface
         }
 
         $pdo = PostgresqlConnection::connect();
-        $articleRepository = new ArticleRepository();
+        $articleSummaryQueryService = new ArticleSummaryQueryService($pdo);
 
-        $articles = GetArticleListAction::run($pdo, $articleRepository, $limit);
-        foreach ($articles as $article) {
-            $article->setThumbnailUrl(Config::getImageBaseUrl() . $article->getThumbnailUrl());
-        }
+        $articles = $articleSummaryQueryService->getArticleSummaryList($limit);
 
         $helper = new IndexViewHelper($articles);
         $html = $helper->render();
