@@ -66,7 +66,7 @@ readonly class ArticleDetailQueryService
             user_id: (int)$row['user_id'],
             title: $row['title'],
             body: $row['body'],
-            thumbnail_image_url: Config::getImageBaseUrl() . $row['image_path'],
+            thumbnail_image_url: Config::getImageBaseUrl() . $row['thumbnail_path'],
             image_url_list: $image_url_list,
             created_at: $row['created_at'],
             updated_at: $row['updated_at'],

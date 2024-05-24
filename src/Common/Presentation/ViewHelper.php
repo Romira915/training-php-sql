@@ -17,7 +17,8 @@ class ViewHelper
                 <meta charset="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <title>zenita</title>
-                <link rel="stylesheet" href="./styles/main.css" />
+                <link rel="stylesheet" href="/styles/main.css" />
+                <script src="/styles/tailwind.js"></script>
               </head>
               <body>
               %s
