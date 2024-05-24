@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Romira\Zenita\Feature\Article\Presentation;
 
 use Romira\Zenita\Common\Presentation\ViewHelper;
-use Romira\Zenita\Feature\Article\Domain\Entities\Article;
+use Romira\Zenita\Feature\Article\Application\DTO\TopPagePublishedArticleSummaryDTO;
 
 class IndexViewHelper extends ViewHelper
 {
-    /** @var array<Article> */
+    /** @var array<TopPagePublishedArticleSummaryDTO> */
     private array $articles;
 
     public function __construct(array $articles)
@@ -50,7 +50,8 @@ class IndexViewHelper extends ViewHelper
     private function createArticleFormElement(): string
     {
         return '
-            <form class="article-form" action="/articles" method="post" ">
+            <form class="article-form" action="/articles" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
                 <div class="article-form__label-wrapper">
                     <label for="title" >タイトル</label>
                     <input type="text" id="title" name="title" maxlength="191" required>
@@ -61,7 +62,7 @@ class IndexViewHelper extends ViewHelper
                 </div>
                 <div class="article-form__label-wrapper">
                     <label for="thumbnail">サムネイル</label>
-                    <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png, image/gif" class="article-form__thumbnail-input">
+                    <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png, image/gif" class="article-form__thumbnail-input" required>
                 </div>
                 <button type="submit" class="article-form__post-button">投稿</button>
             </form>
@@ -79,15 +80,17 @@ class IndexViewHelper extends ViewHelper
         return '<ul class="articles">' . $articlesHtml . '</ul>';
     }
 
-    private function createArticleElement(Article $article): string
+    private function createArticleElement(TopPagePublishedArticleSummaryDTO $article): string
     {
         return '
             <li>
-                <article class="article">
-                    <h2 class="article__title">' . htmlspecialchars($article->getTitle()) . '</h2>
-                    <p class="article__body">' . htmlspecialchars($article->getBody()) . '</p>
-                    <img class="article__thumbnail" src="' . htmlspecialchars($article->getThumbnailUrl()) . '" alt="' . htmlspecialchars($article->getTitle()) . '">
-                </article>
+                <a href="/articles/' . htmlspecialchars((string)$article->id) . '">
+                    <article class="article">
+                        <h2 class="article__title">' . htmlspecialchars($article->title) . '</h2>
+                        <p class="article__body">' . htmlspecialchars($article->body) . '</p>
+                        <img class="article__thumbnail" src="' . htmlspecialchars($article->thumbnail_url) . '" alt="' . htmlspecialchars($article->thumbnail_url) . '" width="300" height="255">
+                    </article>
+                </a>            
             </li>
         ';
     }
