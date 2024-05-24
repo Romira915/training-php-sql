@@ -41,7 +41,7 @@ CREATE TABLE article_images
     id         SERIAL PRIMARY KEY,
     article_id INTEGER   NOT NULL,
     user_id    INTEGER   NOT NULL,
-    image_url  TEXT      NOT NULL,
+    image_path TEXT      NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (article_id, user_id) REFERENCES articles (id, user_id)

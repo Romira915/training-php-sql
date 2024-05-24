@@ -21,7 +21,7 @@ readonly class ArticleSummaryQueryService implements ArticleSummaryQueryServiceI
     public function getArticleSummaryList(int $limit): array
     {
         $statement = $this->pdo->prepare('
-        SELECT a.id, ad.user_id, ad.title, ad.body, ai.image_url AS thumbnail_url, ad.created_at, ad.updated_at
+        SELECT a.id, ad.user_id, ad.title, ad.body, ai.image_path AS thumbnail_url, ad.created_at, ad.updated_at
         FROM articles as a
                  INNER JOIN article_published AS ap ON a.id = ap.article_id AND a.user_id = ap.user_id
                  INNER JOIN article_detail AS ad ON a.id = ad.article_id AND a.user_id = ad.user_id
