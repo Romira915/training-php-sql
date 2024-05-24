@@ -86,13 +86,13 @@ class PublishedPublishedArticleRepository implements PublishedArticleRepositoryI
     private static function createArticleImage(PDO $pdo, ArticleImage $image): ArticleImage
     {
         $statement = $pdo->prepare('
-        INSERT INTO article_images (article_id, user_id, image_url)
-        VALUES (:article_id, :user_id, :image_url) RETURNING id
+        INSERT INTO article_images (article_id, user_id, image_path)
+        VALUES (:article_id, :user_id, :image_path) RETURNING id
         ');
         $statement->execute([
             'article_id' => $image->getArticleId(),
             'user_id' => $image->getUserId(),
-            'image_url' => $image->getImagePath()
+            'image_path' => $image->getImagePath()
         ]);
 
         $row = $statement->fetch(PDO::FETCH_ASSOC);
