@@ -8,16 +8,19 @@ use PDO;
 use Romira\Zenita\Feature\Article\Application\DTO\TopPagePublishedArticleSummaryDTO;
 use Romira\Zenita\Feature\Article\Application\QueryServices\ArticleSummaryQueryServiceInterface;
 
-class ArticleSummaryQueryService implements ArticleSummaryQueryServiceInterface
+readonly class ArticleSummaryQueryService implements ArticleSummaryQueryServiceInterface
 {
+    public function __construct(private PDO $pdo)
+    {
+    }
+
     /**
-     * @param PDO $pdo
      * @param int $limit
      * @return array<TopPagePublishedArticleSummaryDTO>
      */
-    public static function getArticleSummaryList(PDO $pdo, int $limit): array
+    public function getArticleSummaryList(int $limit): array
     {
-        $statement = $pdo->prepare('
+        $statement = $this->pdo->prepare('
         SELECT a.id, ad.user_id, ad.title, ad.body, ai.image_url AS thumbnail_url, ad.created_at, ad.updated_at
         FROM articles as a
                  INNER JOIN article_published AS ap ON a.id = ap.article_id AND a.user_id = ap.user_id
