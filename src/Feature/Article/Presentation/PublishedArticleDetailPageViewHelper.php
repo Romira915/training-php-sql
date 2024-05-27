@@ -19,6 +19,7 @@ class PublishedArticleDetailPageViewHelper extends ViewHelper
 
     public function render(): string
     {
+        $this->setTitle($this->articleDetail->title);
         $this->setBody($this->createBody());
 
         return parent::render();

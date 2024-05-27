@@ -7,6 +7,8 @@ namespace Romira\Zenita\Common\Presentation;
 class ViewHelper
 {
     private string $html;
+    private string $title = 'Zenita';
+    private string $body = '';
 
     public function __construct()
     {
@@ -16,7 +18,7 @@ class ViewHelper
               <head>
                 <meta charset="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>zenita</title>
+                <title>%s</title>
                 <link rel="stylesheet" href="/styles/main.css" />
                 <script src="/styles/tailwind.js"></script>
               </head>
@@ -29,13 +31,20 @@ class ViewHelper
         $this->html = $html;
     }
 
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+    }
+
     public function setBody(string $body): void
     {
-        $this->html = sprintf($this->html, $body);
+        $this->body = $body;
     }
 
     public function render(): string
     {
+        $this->html = sprintf($this->html, $this->title, $this->body);
+
         return $this->html;
     }
 }
