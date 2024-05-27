@@ -84,7 +84,7 @@ class IndexViewHelper extends ViewHelper
     {
         return '
             <li>
-                <a href="/articles/' . htmlspecialchars((string)$article->id) . '">
+                <a href="/users/' . htmlspecialchars((string)$article->user_id) . '/articles/' . htmlspecialchars((string)$article->id) . '">
                     <article class="article">
                         <h2 class="article__title">' . htmlspecialchars($article->title) . '</h2>
                         <p class="article__body">' . htmlspecialchars($article->body) . '</p>
