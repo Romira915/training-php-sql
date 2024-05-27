@@ -15,6 +15,10 @@ class GetUsersIdArticlesId implements HandlerInterface
 {
     public static function handle(HttpRequest $request, array $matches): HttpResponse
     {
+        if (!is_numeric($matches['user_id']) || !is_numeric($matches['article_id'])) {
+            return new HttpResponse(statusCode: 404, body: 'Not Found');
+        }
+
         $user_id = (int)$matches['user_id'];
         $article_id = (int)$matches['article_id'];
 
