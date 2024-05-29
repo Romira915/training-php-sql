@@ -9,7 +9,7 @@ use Romira\Zenita\Feature\Article\Domain\Entities\ArticleImage;
 use Romira\Zenita\Feature\Article\Domain\Entities\PublishedArticle;
 use Romira\Zenita\Feature\Article\Domain\Repositories\PublishedArticleRepositoryInterface;
 
-class PublishedPublishedArticleRepository implements PublishedArticleRepositoryInterface
+class PublishedArticleRepository implements PublishedArticleRepositoryInterface
 {
     public static function save(PDO $pdo, PublishedArticle $article): PublishedArticle
     {
@@ -94,16 +94,17 @@ class PublishedPublishedArticleRepository implements PublishedArticleRepositoryI
         );
 
         return new PublishedArticle(
-            id: (int)$row['article_id'],
             user_id: (int)$row['user_id'],
             title: $row['title'],
             body: $row['body'],
             thumbnail: new ArticleImage(
                 user_id: $user_id,
                 image_path: $row['thumbnail_path'],
+                id: (int)$row['thumbnail_id'],
                 article_id: $article_id
             ),
-            images: $image_list
+            images: $image_list,
+            id: (int)$row['article_id']
         );
     }
 

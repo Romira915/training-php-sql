@@ -8,10 +8,10 @@ use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Persistence\PostgresqlConnection;
 use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
-use Romira\Zenita\Feature\Article\Infrastructure\QueryServices\ArticleDetailQueryService;
-use Romira\Zenita\Feature\Article\Presentation\PublishedArticleDetailPageViewHelper;
+use Romira\Zenita\Feature\Article\Infrastructure\QueryServices\ArticleDetailEditQueryService;
+use Romira\Zenita\Feature\Article\Presentation\ArticleDetailEditPageViewHelper;
 
-class GetUsersIdArticlesId implements HandlerInterface
+class GetUsersIdArticlesIdEdit implements HandlerInterface
 {
     public static function handle(HttpRequest $request, array $matches): HttpResponse
     {
@@ -23,15 +23,14 @@ class GetUsersIdArticlesId implements HandlerInterface
         $article_id = (int)$matches['article_id'];
 
         $pdo = PostgresqlConnection::connect();
-        $articleDetailQueryService = new ArticleDetailQueryService($pdo);
+        $articleDetailEditQueryService = new ArticleDetailEditQueryService($pdo);
+        $article = $articleDetailEditQueryService->getArticleDetail($article_id, $user_id);
 
-        $articleDetail = $articleDetailQueryService->getArticleDetail($article_id, $user_id);
-
-        if ($articleDetail === null) {
+        if ($article === null) {
             return new HttpResponse(statusCode: 404, body: 'Not Found');
         }
 
-        $helper = new PublishedArticleDetailPageViewHelper($articleDetail);
+        $helper = new ArticleDetailEditPageViewHelper($article);
         $html = $helper->render();
 
         return new HttpResponse(statusCode: 200, body: $html);

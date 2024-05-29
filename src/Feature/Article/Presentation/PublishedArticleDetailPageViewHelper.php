@@ -32,6 +32,9 @@ class PublishedArticleDetailPageViewHelper extends ViewHelper
                 <header class=''>
                     {$this->createServiceNameElement()}
                 </header>
+                <nav class='self-end'>
+                    <a href='/users/{$this->articleDetail->user_id}/articles/{$this->articleDetail->article_id}/edit' class='text-blue-500 underline'>Edit</a>
+                </nav>
                 <main class=''>
                     {$this->createArticleElement()}
                 </main>

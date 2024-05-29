@@ -19,9 +19,9 @@ readonly class ArticleDetailQueryService
     /**
      * @param int $article_id
      * @param int $user_id
-     * @return PublishedArticleDetailPageDTO
+     * @return PublishedArticleDetailPageDTO|null
      */
-    public function getArticleDetail(int $article_id, int $user_id): PublishedArticleDetailPageDTO
+    public function getArticleDetail(int $article_id, int $user_id): PublishedArticleDetailPageDTO|null
     {
         $statement = $this->pdo->prepare('
             SELECT ap.article_id,
@@ -53,6 +53,10 @@ readonly class ArticleDetailQueryService
         ]);
 
         $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            return null;
+        }
 
         /** @var array<string> $image_path_list */
         $image_path_list = json_decode($row['image_path_list'], true);
