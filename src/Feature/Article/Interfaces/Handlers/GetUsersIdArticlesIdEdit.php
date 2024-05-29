@@ -4,27 +4,28 @@ declare(strict_types=1);
 
 namespace Romira\Zenita\Feature\Article\Interfaces\Handlers;
 
+use InvalidArgumentException;
 use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Persistence\PostgresqlConnection;
 use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
 use Romira\Zenita\Feature\Article\Infrastructure\QueryServices\ArticleDetailEditQueryService;
+use Romira\Zenita\Feature\Article\Interfaces\Http\GetUsersIdArticlesIdEditRequest;
 use Romira\Zenita\Feature\Article\Presentation\ArticleDetailEditPageViewHelper;
 
 class GetUsersIdArticlesIdEdit implements HandlerInterface
 {
     public static function handle(HttpRequest $request, array $matches): HttpResponse
     {
-        if (!is_numeric($matches['user_id']) || !is_numeric($matches['article_id'])) {
+        $editArticlePageRequest = GetUsersIdArticlesIdEditRequest::new($matches['user_id'], $matches['article_id']);
+
+        if ($editArticlePageRequest instanceof InvalidArgumentException) {
             return new HttpResponse(statusCode: 404, body: 'Not Found');
         }
 
-        $user_id = (int)$matches['user_id'];
-        $article_id = (int)$matches['article_id'];
-
         $pdo = PostgresqlConnection::connect();
         $articleDetailEditQueryService = new ArticleDetailEditQueryService($pdo);
-        $article = $articleDetailEditQueryService->getArticleDetail($article_id, $user_id);
+        $article = $articleDetailEditQueryService->getArticleDetail($editArticlePageRequest->article_id, $editArticlePageRequest->user_id);
 
         if ($article === null) {
             return new HttpResponse(statusCode: 404, body: 'Not Found');
