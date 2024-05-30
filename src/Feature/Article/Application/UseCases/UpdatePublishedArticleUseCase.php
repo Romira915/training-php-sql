@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Romira\Zenita\Feature\Article\Application\UseCases;
 
-use Monolog\Logger;
+use Exception;
 use PDO;
-use PDOException;
 use Romira\Zenita\Feature\Article\Application\DTO\UpdatePublishedArticleDTO;
 use Romira\Zenita\Feature\Article\Domain\Entities\PublishedArticle;
 use Romira\Zenita\Feature\Article\Infrastructure\Persistence\PublishedArticleRepository;
 
 class UpdatePublishedArticleUseCase
 {
-    public static function run(Logger $logger, PDO $pdo, PublishedArticleRepository $articleRepository, UpdatePublishedArticleDTO $updatePublishedArticleDTO): void
+    public static function run(PDO $pdo, PublishedArticleRepository $articleRepository, UpdatePublishedArticleDTO $updatePublishedArticleDTO): void
     {
         $pdo->beginTransaction();
         try {
@@ -30,9 +29,8 @@ class UpdatePublishedArticleUseCase
 
             $articleRepository::save($pdo, $article);
             $pdo->commit();
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             $pdo->rollBack();
-            $logger->error('UpdatePublishedArticleUseCase failed', ['error' => $e->getMessage()]);
             throw $e;
         }
     }
