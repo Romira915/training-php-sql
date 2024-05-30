@@ -21,7 +21,7 @@ class File
         };
     }
 
-    public static function remove($filePath): bool
+    public static function remove(string $filePath): bool
     {
         return unlink($filePath);
     }
