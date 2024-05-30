@@ -20,7 +20,6 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
         }
         self::createPublishedArticleIfNotExists($pdo, $article_id, $article->getUserId());
 
-        // TODO: Set article_id to thumbnail and images
         $thumbnail = new ArticleImage(
             user_id: $article->getThumbnail()->getUserId(),
             image_path: $article->getThumbnail()->getImagePath(),
@@ -33,12 +32,25 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
             self::updateArticleImage($pdo, $thumbnail);
         }
 
+        $images = array_map(
+            fn(ArticleImage $image) => new ArticleImage(
+                user_id: $image->getUserId(),
+                image_path: $image->getImagePath(),
+                id: $image->getId(),
+                article_id: $article_id
+            ),
+            $article->getImages()
+        );
+        // thumbnail以外の画像を削除
+        self::deleteArticleImagesByArticleIdAndUserIdExcludeThumbnail($pdo, $article_id, $article->getUserId(), $thumbnail->getId());
+        $images = self::createArticleImages($pdo, $images);
+
         $article = new PublishedArticle(
             user_id: $article->getUserId(),
             title: $article->getTitle(),
             body: $article->getBody(),
             thumbnail: $thumbnail,
-            images: $article->getImages(),
+            images: $images,
             id: $article_id
         );
 
@@ -92,6 +104,8 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
             ),
             $image_list
         );
+        // Exclude thumbnail from image_list
+        $image_list = array_filter($image_list, fn(ArticleImage $image) => $image->getId() !== (int)$row['thumbnail_id']);
 
         return new PublishedArticle(
             user_id: (int)$row['user_id'],
@@ -208,6 +222,47 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
         );
     }
 
+    /**
+     * @param PDO $pdo
+     * @param array<ArticleImage> $images
+     * @return array
+     */
+    private static function createArticleImages(PDO $pdo, array $images): array
+    {
+        $values = '';
+        foreach ($images as $key => $image) {
+            $values .= '(:article_id_' . $key . ', :user_id_' . $key . ', :image_path_' . $key . '),';
+        }
+        $values = rtrim($values, ',');
+        $bindParams = [];
+        foreach ($images as $key => $image) {
+            $bindParams['article_id_' . $key] = $image->getArticleId();
+            $bindParams['user_id_' . $key] = $image->getUserId();
+            $bindParams['image_path_' . $key] = $image->getImagePath();
+        }
+
+        $statement = $pdo->prepare('
+            INSERT INTO article_images (article_id, user_id, image_path)
+            VALUES ' . $values . '
+            RETURNING id
+        ');
+        $statement->execute($bindParams);
+
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        $result = [];
+        foreach ($images as $key => $image) {
+            $result[] = new ArticleImage(
+                user_id: $image->getUserId(),
+                image_path: $image->getImagePath(),
+                id: (int)$rows[$key]['id'],
+                article_id: $image->getArticleId()
+            );
+        }
+
+        return $result;
+    }
+
     private static function updateArticleImage(PDO $pdo, ArticleImage $image): void
     {
         $statement = $pdo->prepare('
@@ -217,6 +272,18 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
         $statement->execute([
             'image_path' => $image->getImagePath(),
             'id' => $image->getId(),
+        ]);
+    }
+
+    private static function deleteArticleImagesByArticleIdAndUserIdExcludeThumbnail(PDO $pdo, int $article_id, int $user_id, $thumbnail_id): void
+    {
+        $statement = $pdo->prepare('
+            DELETE FROM article_images WHERE article_id = :article_id AND user_id = :user_id AND id != :thumbnail_id
+        ');
+        $statement->execute([
+            'article_id' => $article_id,
+            'user_id' => $user_id,
+            'thumbnail_id' => $thumbnail_id
         ]);
     }
 }

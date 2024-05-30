@@ -26,12 +26,18 @@ class CreatePublishArticleUseCase
         try {
             $image_path = $imageStorage->moveUploadedFile($publishedArticleDTO->thumbnail_image_path);
             $thumbnail = new ArticleImage(user_id: $publishedArticleDTO->user_id, image_path: $image_path);
+            
+            $images = array_map(
+                fn($image_path) => new ArticleImage(user_id: $publishedArticleDTO->user_id, image_path: $imageStorage->moveUploadedFile($image_path)),
+                $publishedArticleDTO->image_path_list
+            );
+
             $article = new PublishedArticle(
                 user_id: $publishedArticleDTO->user_id,
                 title: $publishedArticleDTO->title,
                 body: $publishedArticleDTO->body,
                 thumbnail: $thumbnail,
-                images: []
+                images: $images
             );
 
             $articleRepository::save($pdo, $article);

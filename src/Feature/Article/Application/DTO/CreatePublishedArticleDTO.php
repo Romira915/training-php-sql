@@ -11,6 +11,8 @@ readonly class CreatePublishedArticleDTO
         public string $title,
         public string $body,
         public string $thumbnail_image_path,
+        /** @var string[] */
+        public array  $image_path_list,
     )
     {
     }
