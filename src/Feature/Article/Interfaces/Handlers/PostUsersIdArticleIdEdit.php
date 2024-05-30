@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Romira\Zenita\Feature\Article\Interfaces\Handlers;
 
 use InvalidArgumentException;
+use Monolog\Level;
 use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Http\SeeOtherResponse;
@@ -15,6 +16,7 @@ use Romira\Zenita\Feature\Article\Application\UseCases\UpdatePublishedArticleUse
 use Romira\Zenita\Feature\Article\Infrastructure\Persistence\PublishedArticleRepository;
 use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidArticleParameterException;
 use Romira\Zenita\Feature\Article\Interfaces\Http\PostUsersIdArticleIdEditRequest;
+use Romira\Zenita\Utils\Logger\LoggerFactory;
 
 class PostUsersIdArticleIdEdit implements HandlerInterface
 {
@@ -30,6 +32,7 @@ class PostUsersIdArticleIdEdit implements HandlerInterface
             return new HttpResponse(statusCode: 400, body: 'Invalid title or body');
         }
 
+        $logger = LoggerFactory::createLogger('PostUsersIdArticleIdEdit', Level::Info);
         $pdo = PostgresqlConnection::connect();
         $articleRepository = new PublishedArticleRepository();
         $updatePublishedArticleDTO = new UpdatePublishedArticleDTO(
@@ -39,7 +42,7 @@ class PostUsersIdArticleIdEdit implements HandlerInterface
             body: $editArticleRequest->body
         );
 
-        UpdatePublishedArticleUseCase::run($pdo, $articleRepository, $updatePublishedArticleDTO);
+        UpdatePublishedArticleUseCase::run($logger, $pdo, $articleRepository, $updatePublishedArticleDTO);
 
         return new SeeOtherResponse('/users/' . $editArticleRequest->user_id . '/articles/' . $editArticleRequest->article_id);
     }
