@@ -11,7 +11,7 @@ class GetUsersIdArticlesIdEditRequest
     public int $user_id;
     public int $article_id;
 
-    private function __construct(int|string $user_id, int|string $article_id)
+    private function __construct(int $user_id, int $article_id)
     {
         $this->user_id = $user_id;
         $this->article_id = $article_id;
@@ -28,6 +28,6 @@ class GetUsersIdArticlesIdEditRequest
             return new InvalidArgumentException('Invalid user_id or article_id');
         }
 
-        return new self($user_id, $article_id);
+        return new self((int)$user_id, (int)$article_id);
     }
 }

@@ -59,16 +59,16 @@ class ArticleDetailEditPageViewHelper extends ViewHelper
         $bodyHeight = $bodyLineCount * 20 + 40;
 
         return '
-            <form class="flex flex-col gap-4 items-center w-[500px]" action=/users/' . $this->articleDetail->user_id . '/articles/' . $this->articleDetail->article_id . '/edit method="post" enctype="multipart/form-data">
-                <div class="flex items-center gap-2 justify-between w-full">
+            <form class="flex flex-col gap-4 items-center w-fit" action=/users/' . $this->articleDetail->user_id . '/articles/' . $this->articleDetail->article_id . '/edit method="post" enctype="multipart/form-data">
+                <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="title">タイトル</label>
-                    <input class="w-[400px] p-1" type="text" id="title" name="title" maxlength="100" value=' . $this->articleDetail->title . 'required>
+                    <input class="w-[400px] p-1" type="text" id="title" name="title" maxlength="100" value=' . $this->articleDetail->title . ' required>
                 </div>
-                <div class="flex items-center gap-2 justify-between w-full">
+                <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="body">本文</label>
                     <textarea class="w-[400px] h-[' . $bodyHeight . 'px]' . ' p-2 leading-[20px]" id="body" name="body" maxlength="8000" required>' . $this->articleDetail->body . '</textarea>
                 </div>
-                <button type="submit" class="bg-gray-300 px-4 py-1 rounded hover:bg-gray-400">投稿</button>
+                <button type="submit" class="bg-gray-300 px-4 py-1 rounded hover:bg-gray-400">Update</button>
             </form>
         ';
     }
