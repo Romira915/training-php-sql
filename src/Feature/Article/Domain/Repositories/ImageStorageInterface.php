@@ -14,4 +14,6 @@ interface ImageStorageInterface
      * @throws InvalidUploadImageException
      */
     public function moveUploadedFile(string $tmpName): string;
+
+    public function deleteImageFile(string $filePath): bool;
 }
