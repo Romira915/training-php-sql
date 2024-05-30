@@ -125,14 +125,6 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
             'article_id' => $article_id,
             'user_id' => $user_id
         ]);
-
-        $statement = $pdo->prepare('
-            DELETE FROM article_images WHERE article_id = :article_id AND user_id = :user_id
-        ');
-        $statement->execute([
-            'article_id' => $article_id,
-            'user_id' => $user_id
-        ]);
     }
 
     /**
