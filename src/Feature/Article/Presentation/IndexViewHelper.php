@@ -28,11 +28,12 @@ class IndexViewHelper extends ViewHelper
     private function createBody(): string
     {
         return "
+            {$this->createCheckDeleteScript()}
             <div class='root'>
                 <header class='header'>
                     {$this->createServiceNameElement()}
                 </header>
-                <main class='main'>
+                <main class='flex flex-col items-center'>
                     {$this->createArticleFormElement()}
                     <section>
                         {$this->createArticlesElement()}
@@ -44,27 +45,27 @@ class IndexViewHelper extends ViewHelper
 
     private function createServiceNameElement(): string
     {
-        return '<h1 class="service-name">Zenita</h1>';
+        return '<h1 class="text-4xl py-4">Zenita</h1>';
     }
 
     private function createArticleFormElement(): string
     {
         return '
-            <form class="article-form" action="/articles" method="post" enctype="multipart/form-data">
+            <form class="flex flex-col gap-4 items-center w-fit" action="/articles" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
-                <div class="article-form__label-wrapper">
+                <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="title" >タイトル</label>
-                    <input type="text" id="title" name="title" maxlength="191" required>
+                    <input class="w-[400px] p-1" type="text" id="title" name="title" maxlength="191" required>
                 </div>
-                <div class="article-form__label-wrapper">
+                <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="body">本文</label>
-                    <textarea id="body" name="body" required></textarea>
+                    <textarea class="w-[400px] p-2 leading-[20px] h-[100px]" id="body" name="body" required></textarea>
                 </div>
-                <div class="article-form__label-wrapper">
+                <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="thumbnail">サムネイル</label>
-                    <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png, image/gif" class="article-form__thumbnail-input" required>
+                    <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png, image/gif" class="" required>
                 </div>
-                <button type="submit" class="article-form__post-button">投稿</button>
+                <button type="submit" class="bg-gray-300 px-4 py-1 rounded hover:bg-gray-400">投稿</button>
             </form>
         ';
     }
@@ -83,7 +84,10 @@ class IndexViewHelper extends ViewHelper
     private function createArticleElement(TopPagePublishedArticleSummaryDTO $article): string
     {
         return '
-            <li>
+            <li class="flex flex-col">
+                <form class="self-end w-fit" method="post" action="/users/' . $article->user_id . '/articles/' . $article->id . '/delete" onSubmit="return CheckDelete()">
+                    <button type="submit" class="text-red-500 underline">Delete</button>
+                </form>
                 <a href="/users/' . htmlspecialchars((string)$article->user_id) . '/articles/' . htmlspecialchars((string)$article->id) . '">
                     <article class="article">
                         <h2 class="article__title">' . htmlspecialchars($article->title) . '</h2>
@@ -93,5 +97,16 @@ class IndexViewHelper extends ViewHelper
                 </a>            
             </li>
         ';
+    }
+
+    private function createCheckDeleteScript()
+    {
+        return "
+            <script>
+                function CheckDelete() {
+                    return confirm('Are you sure you want to delete?');
+                }
+            </script>
+        ";
     }
 }

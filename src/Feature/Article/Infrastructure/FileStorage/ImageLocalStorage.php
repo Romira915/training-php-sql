@@ -34,4 +34,9 @@ class ImageLocalStorage implements ImageStorageInterface
 
         return Config::IMAGE_PATH_PREFIX . $fileName;
     }
+
+    public function deleteImageFile(string $filePath): bool
+    {
+        return File::remove($this->rootDir . $filePath);
+    }
 }

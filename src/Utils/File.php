@@ -20,4 +20,9 @@ class File
             default => 'unknown',
         };
     }
+
+    public static function remove($filePath): bool
+    {
+        return unlink($filePath);
+    }
 }

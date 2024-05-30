@@ -28,12 +28,16 @@ class PublishedArticleDetailPageViewHelper extends ViewHelper
     private function createBody(): string
     {
         return "
+            {$this->createCheckDeleteScript()}
             <div class='flex flex-col items-center w-[650px] m-auto'>
                 <header class=''>
                     {$this->createServiceNameElement()}
                 </header>
-                <nav class='self-end'>
+                <nav class='flex gap-2 self-end'>
                     <a href='/users/{$this->articleDetail->user_id}/articles/{$this->articleDetail->article_id}/edit' class='text-blue-500 underline'>Edit</a>
+                    <form method='post' action='/users/{$this->articleDetail->user_id}/articles/{$this->articleDetail->article_id}/delete' onSubmit='return CheckDelete()'>
+                        <button type='submit' class='text-red-500 underline'>Delete</button>
+                    </form>
                 </nav>
                 <main class=''>
                     {$this->createArticleElement()}
@@ -86,5 +90,16 @@ class PublishedArticleDetailPageViewHelper extends ViewHelper
                 <img src='{$image_url}' alt='' class='object-contain' width='300' height='225' />
             </li>
             ";
+    }
+
+    private function createCheckDeleteScript()
+    {
+        return "
+            <script>
+                function CheckDelete() {
+                    return confirm('Are you sure you want to delete?');
+                }
+            </script>
+        ";
     }
 }
