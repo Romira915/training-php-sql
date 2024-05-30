@@ -27,6 +27,10 @@ class GetUsersIdArticlesId implements HandlerInterface
 
         $articleDetail = $articleDetailQueryService->getArticleDetail($article_id, $user_id);
 
+        if ($articleDetail === null) {
+            return new HttpResponse(statusCode: 404, body: 'Not Found');
+        }
+
         $helper = new PublishedArticleDetailPageViewHelper($articleDetail);
         $html = $helper->render();
 

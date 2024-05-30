@@ -13,7 +13,7 @@ use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
 use Romira\Zenita\Feature\Article\Application\DTO\CreatePublishedArticleDTO;
 use Romira\Zenita\Feature\Article\Application\UseCases\CreatePublishArticleUseCase;
 use Romira\Zenita\Feature\Article\Infrastructure\FileStorage\ImageLocalStorage;
-use Romira\Zenita\Feature\Article\Infrastructure\Persistence\PublishedPublishedArticleRepository;
+use Romira\Zenita\Feature\Article\Infrastructure\Persistence\PublishedArticleRepository;
 use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidUploadImageException;
 use Romira\Zenita\Feature\Article\Interfaces\Validator\BodyValidator;
 use Romira\Zenita\Feature\Article\Interfaces\Validator\TitleValidator;
@@ -47,7 +47,7 @@ class PostArticles implements HandlerInterface
         }
 
         $pdo = PostgresqlConnection::connect();
-        $articleRepository = new PublishedPublishedArticleRepository();
+        $articleRepository = new PublishedArticleRepository();
         $imageStorage = new ImageLocalStorage($request->server['DOCUMENT_ROOT']);
         $createPublishedArticleDTO = new CreatePublishedArticleDTO(user_id: 1, title: $title, body: $body, thumbnail_image_path: $image['tmp_name']);
 
