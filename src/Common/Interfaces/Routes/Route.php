@@ -8,7 +8,6 @@ use Exception;
 use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
-use Romira\Zenita\Utils\Collection\Collection;
 
 class Route
 {
@@ -61,8 +60,6 @@ class Route
             $pattern = $this->createPattern($route);
 
             if (preg_match($pattern, $request_uri, $matches)) {
-                $matches = Collection::castNumbers($matches);
-
                 $response = $handler->handle($this->httpRequest, $matches);
                 $response->emit();
                 return;
