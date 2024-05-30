@@ -12,4 +12,6 @@ interface PublishedArticleRepositoryInterface
     public static function save(PDO $pdo, PublishedArticle $article): PublishedArticle;
 
     public static function findByUserIdAndArticleId(PDO $pdo, int $user_id, int $article_id): PublishedArticle|null;
+
+    public static function delete(PDO $pdo, int $user_id, int $article_id): void;
 }

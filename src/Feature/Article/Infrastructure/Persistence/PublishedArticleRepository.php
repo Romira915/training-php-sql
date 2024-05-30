@@ -108,6 +108,33 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
         );
     }
 
+    public static function delete(PDO $pdo, int $user_id, int $article_id): void
+    {
+        $statement = $pdo->prepare('
+            DELETE FROM article_published WHERE article_id = :article_id AND user_id = :user_id
+        ');
+        $statement->execute([
+            'article_id' => $article_id,
+            'user_id' => $user_id
+        ]);
+
+        $statement = $pdo->prepare('
+            DELETE FROM article_detail WHERE article_id = :article_id AND user_id = :user_id
+        ');
+        $statement->execute([
+            'article_id' => $article_id,
+            'user_id' => $user_id
+        ]);
+
+        $statement = $pdo->prepare('
+            DELETE FROM article_images WHERE article_id = :article_id AND user_id = :user_id
+        ');
+        $statement->execute([
+            'article_id' => $article_id,
+            'user_id' => $user_id
+        ]);
+    }
+
     /**
      * @param PDO $pdo
      * @param int $user_id
