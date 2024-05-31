@@ -69,6 +69,11 @@ class IndexViewHelper extends ViewHelper
                     <label for="images">画像</label>
                     <input type="file" id="images" name="images[]" accept="image/jpeg, image/png, image/gif" multiple>
                 </div>
+                <div class="flex flex-col items-start gap-2 justify-between w-full">
+                    <label for="tags">タグ</label>
+                    <input class="w-[400px] p-1" type="text" id="tags" name="tags" required>
+                    <p class="text-xs">※タグはカンマ区切りで入力してください</p>
+                </div>
                 <button type="submit" class="bg-gray-300 px-4 py-1 rounded hover:bg-gray-400">投稿</button>
             </form>
         ';

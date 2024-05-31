@@ -41,9 +41,11 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
             ),
             $article->getImages()
         );
-        // thumbnail以外の画像を削除
-        self::deleteArticleImagesByArticleIdAndUserIdExcludeThumbnail($pdo, $article_id, $article->getUserId(), $thumbnail->getId());
-        $images = self::createArticleImages($pdo, $images);
+        if (count($images) > 0) {
+            // thumbnail以外の画像を削除
+            self::deleteArticleImagesByArticleIdAndUserIdExcludeThumbnail($pdo, $article_id, $article->getUserId(), $thumbnail->getId());
+            $images = self::createArticleImages($pdo, $images);
+        }
 
         $article = new PublishedArticle(
             user_id: $article->getUserId(),

@@ -31,14 +31,15 @@ class PostUsersIdArticles implements HandlerInterface
             $request->post['title'] ?? '',
             $request->post['body'] ?? '',
             $request->files['thumbnail'] ?? [],
-            File::reshapeFilesArray($request->files['images'] ?? [])
+            File::reshapeFilesArray($request->files['images'] ?? []),
+            $request->post['tags'] ?? ''
         );
 
         if ($createArticleRequest instanceof InvalidArgumentException) {
             return new HttpResponse(statusCode: 400, body: 'Invalid user_id');
         }
         if ($createArticleRequest instanceof InvalidArticleParameterException) {
-            return new HttpResponse(statusCode: 400, body: 'Invalid title or body');
+            return new HttpResponse(statusCode: 400, body: 'Invalid title or body or tags');
         }
         if ($createArticleRequest instanceof InvalidUploadImageException) {
             return new HttpResponse(statusCode: 400, body: 'Invalid Upload image');
