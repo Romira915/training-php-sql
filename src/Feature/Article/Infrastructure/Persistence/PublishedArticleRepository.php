@@ -313,15 +313,15 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
     private static function createTags(PDO $pdo, array $tags): array
     {
         $values = '';
-        foreach ($tags as $key => $tag) {
-            $values .= '(:article_id_' . $key . ', :user_id_' . $key . ', :tag_' . $key . '),';
+        for ($i = 0; $i < count($tags); $i++) {
+            $values .= '(:article_id_' . $i . ', :user_id_' . $i . ', :tag_' . $i . '),';
         }
         $values = rtrim($values, ',');
         $bindParams = [];
-        foreach ($tags as $key => $tag) {
-            $bindParams['article_id_' . $key] = $tag->getArticleId();
-            $bindParams['user_id_' . $key] = $tag->getUserId();
-            $bindParams['tag_' . $key] = $tag->getTag();
+        for ($i = 0; $i < count($tags); $i++) {
+            $bindParams['article_id_' . $i] = $tags[$i]->getArticleId();
+            $bindParams['user_id_' . $i] = $tags[$i]->getUserId();
+            $bindParams['tag_' . $i] = $tags[$i]->getTag();
         }
 
         $statement = $pdo->prepare('
