@@ -20,8 +20,9 @@ class PublishedArticle
         private ArticleImage $thumbnail,
         /** @var array<ArticleImage> */
         private array        $images,
-        private ?int         $id = null,
-        private array        $tags
+        /** @var array<ArticleTag> */
+        private array        $tags,
+        private ?int         $id = null
     )
     {
         $this->setImages($images);
