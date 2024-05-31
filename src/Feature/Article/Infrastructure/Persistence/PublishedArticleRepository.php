@@ -325,7 +325,7 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
         }
 
         $statement = $pdo->prepare('
-            INSERT INTO article_tags (article_id, user_id, title)
+            INSERT INTO article_tags (article_id, user_id, tag_name)
             VALUES ' . $values . '
             RETURNING id
         ');
