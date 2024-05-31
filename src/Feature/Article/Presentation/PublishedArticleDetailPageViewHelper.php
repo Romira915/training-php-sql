@@ -65,6 +65,7 @@ class PublishedArticleDetailPageViewHelper extends ViewHelper
                 <img class='object-contain' src='{$this->articleDetail->thumbnail_image_url}' alt='{$this->articleDetail->title}' width='600' height='450' />
                 <p class=''>{$this->articleDetail->body}</p>
                 {$this->createImageListElement()}
+                {$this->createTagsElement($this->articleDetail->tags)}
             </article>
             ";
     }
@@ -90,6 +91,20 @@ class PublishedArticleDetailPageViewHelper extends ViewHelper
                 <img src='{$image_url}' alt='' class='object-contain' width='300' height='225' />
             </li>
             ";
+    }
+
+    /**
+     * @param string[] $tags
+     * @return string
+     */
+    private function createTagsElement(array $tags): string
+    {
+        $tagsHtml = '';
+        foreach ($tags as $tag) {
+            $tagsHtml .= '<li class="text-sm">#' . htmlspecialchars($tag) . '</li>';
+        }
+
+        return '<ul class="flex gap-2">' . $tagsHtml . '</ul>';
     }
 
     private function createCheckDeleteScript()

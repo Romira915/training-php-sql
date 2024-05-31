@@ -24,6 +24,7 @@ class UpdatePublishedArticleUseCase
                 body: $updatePublishedArticleDTO->body,
                 thumbnail: $article->getThumbnail(),
                 images: $article->getImages(),
+                tags: $article->getTags(),
                 id: $article->getId()
             );
 

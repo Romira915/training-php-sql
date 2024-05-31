@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Romira\Zenita\Feature\Article\Domain\Entities;
 
 use Romira\Zenita\Feature\Article\Domain\Exception\InvalidImageLimitException;
+use Romira\Zenita\Feature\Article\Domain\Exception\InvalidTagsLimitException;
 
 class PublishedArticle
 {
     const int MAX_IMAGES = 20;
+    const int MAX_TAGS = 10;
 
     /**
-     * @throws InvalidImageLimitException
+     * @throws InvalidImageLimitException|InvalidTagsLimitException
      */
     public function __construct(
         private int          $user_id,
@@ -26,6 +28,7 @@ class PublishedArticle
     )
     {
         $this->setImages($images);
+        $this->setTags($tags);
     }
 
     public function getId(): int|null
@@ -70,6 +73,18 @@ class PublishedArticle
     public function getImages(): array
     {
         return $this->images;
+    }
+
+    /**
+     * @throws InvalidTagsLimitException
+     */
+    public function setTags(array $tags): void
+    {
+        if (count($tags) > self::MAX_TAGS) {
+            throw new InvalidTagsLimitException('タグの登録数は最大' . self::MAX_TAGS . '個までです。');
+        }
+
+        $this->tags = $tags;
     }
 
     public function getTags(): array

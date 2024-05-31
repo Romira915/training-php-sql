@@ -16,6 +16,8 @@ readonly class TopPagePublishedArticleSummaryDTO
         public string $title,
         public string $body,
         string        $thumbnail_image_path,
+        /** @var string[] */
+        public array  $tags
     )
     {
         $this->thumbnail_url = Config::getImageBaseUrl() . $thumbnail_image_path;

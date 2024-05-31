@@ -102,13 +102,28 @@ class IndexViewHelper extends ViewHelper
                         <h2 class="article__title">' . htmlspecialchars($article->title) . '</h2>
                         <p class="article__body">' . htmlspecialchars($article->body) . '</p>
                         <img class="article__thumbnail" src="' . htmlspecialchars($article->thumbnail_url) . '" alt="' . htmlspecialchars($article->thumbnail_url) . '" width="300" height="255">
+                        ' . $this->createTagsElement($article->tags) . '
                     </article>
                 </a>            
             </li>
         ';
     }
 
-    private function createCheckDeleteScript()
+    /**
+     * @param string[] $tags
+     * @return string
+     */
+    private function createTagsElement(array $tags): string
+    {
+        $tagsHtml = '';
+        foreach ($tags as $tag) {
+            $tagsHtml .= '<li class="text-sm">#' . htmlspecialchars($tag) . '</li>';
+        }
+
+        return '<ul class="flex gap-2">' . $tagsHtml . '</ul>';
+    }
+
+    private function createCheckDeleteScript(): string
     {
         return "
             <script>

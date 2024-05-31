@@ -68,8 +68,8 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
             body: $article->getBody(),
             thumbnail: $thumbnail,
             images: $images,
-            id: $article_id,
-            tags: $tags
+            tags: $tags,
+            id: $article_id
         );
 
         self::upsertArticleDetail($pdo, $article);
@@ -84,14 +84,24 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
                    ap.user_id,
                    ad.title,
                    ad.body,
-                   tnai.id AS thumbnail_id,
-                   tnai.image_path         AS thumbnail_path,
-                   json_agg(json_build_object('id', ai.id, 'path', ai.image_path)) AS image_list
+                   tnai.id         AS thumbnail_id,
+                   tnai.image_path AS thumbnail_path,
+                   COALESCE(
+                                   jsonb_agg(DISTINCT jsonb_build_object('id', ai.id, 'path', ai.image_path))
+                                   FILTER (WHERE ai.id IS NOT NULL),
+                                   '[]'::jsonb
+                   )               AS image_list,
+                   COALESCE(
+                                   jsonb_agg(DISTINCT jsonb_build_object('id', at.id, 'tag_name', at.tag_name))
+                                   FILTER (WHERE at.id IS NOT NULL),
+                                   '[]'::jsonb
+                   )               AS tag_list
             FROM article_detail AS ad
-                     JOIN articles AS a ON ad.article_id = a.id
-                     JOIN article_published AS ap ON ad.article_id = ap.article_id
-                     JOIN article_images AS tnai ON ad.thumbnail_id = tnai.id
-                     JOIN article_images AS ai ON ad.article_id = ai.article_id
+                     INNER JOIN articles AS a ON ad.article_id = a.id AND ad.user_id = a.user_id
+                     INNER JOIN article_published AS ap ON ad.article_id = ap.article_id AND ad.user_id = ap.user_id
+                     INNER JOIN article_images AS tnai ON ad.thumbnail_id = tnai.id
+                     LEFT JOIN article_images AS ai ON ad.article_id = ai.article_id AND ad.user_id = ai.user_id
+                     LEFT JOIN article_tags AS at ON ad.article_id = at.article_id AND ad.user_id = at.user_id
             WHERE ap.article_id = :article_id
               AND ap.user_id = :user_id
             GROUP BY ap.article_id,
@@ -125,6 +135,17 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
         // Exclude thumbnail from image_list
         $image_list = array_filter($image_list, fn(ArticleImage $image) => $image->getId() !== (int)$row['thumbnail_id']);
 
+        $tags = json_decode($row['tag_list'], true);
+        $tags = array_map(
+            fn(array $tag) => new ArticleTag(
+                user_id: $user_id,
+                tag_name: $tag['tag_name'],
+                id: $tag['id'],
+                article_id: $article_id
+            ),
+            $tags
+        );
+
         return new PublishedArticle(
             user_id: (int)$row['user_id'],
             title: $row['title'],
@@ -136,7 +157,8 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
                 article_id: $article_id
             ),
             images: $image_list,
-            id: (int)$row['article_id']
+            tags: $tags,
+            id: (int)$row['article_id'],
         );
     }
 
