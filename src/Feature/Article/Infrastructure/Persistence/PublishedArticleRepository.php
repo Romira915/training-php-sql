@@ -6,6 +6,7 @@ namespace Romira\Zenita\Feature\Article\Infrastructure\Persistence;
 
 use PDO;
 use Romira\Zenita\Feature\Article\Domain\Entities\ArticleImage;
+use Romira\Zenita\Feature\Article\Domain\Entities\ArticleTag;
 use Romira\Zenita\Feature\Article\Domain\Entities\PublishedArticle;
 use Romira\Zenita\Feature\Article\Domain\Repositories\PublishedArticleRepositoryInterface;
 
@@ -47,13 +48,28 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
             $images = self::createArticleImages($pdo, $images);
         }
 
+        $tags = array_map(
+            fn(ArticleTag $tag) => new ArticleTag(
+                user_id: $tag->getUserId(),
+                tag_name: $tag->getTag(),
+                id: $tag->getId(),
+                article_id: $article_id
+            ),
+            $article->getTags()
+        );
+        if (count($tags) > 0) {
+            self::deleteTagsByArticleIdAndUserId($pdo, $article_id, $article->getUserId());
+            $tags = self::createTags($pdo, $tags);
+        }
+
         $article = new PublishedArticle(
             user_id: $article->getUserId(),
             title: $article->getTitle(),
             body: $article->getBody(),
             thumbnail: $thumbnail,
             images: $images,
-            id: $article_id
+            id: $article_id,
+            tags: $tags
         );
 
         self::upsertArticleDetail($pdo, $article);
@@ -286,6 +302,58 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
             'article_id' => $article_id,
             'user_id' => $user_id,
             'thumbnail_id' => $thumbnail_id
+        ]);
+    }
+
+    /**
+     * @param PDO $pdo
+     * @param ArticleTag[] $tags
+     * @return ArticleTag[]
+     */
+    private static function createTags(PDO $pdo, array $tags): array
+    {
+        $values = '';
+        for ($i = 0; $i < count($tags); $i++) {
+            $values .= '(:article_id_' . $i . ', :user_id_' . $i . ', :tag_' . $i . '),';
+        }
+        $values = rtrim($values, ',');
+        $bindParams = [];
+        for ($i = 0; $i < count($tags); $i++) {
+            $bindParams['article_id_' . $i] = $tags[$i]->getArticleId();
+            $bindParams['user_id_' . $i] = $tags[$i]->getUserId();
+            $bindParams['tag_' . $i] = $tags[$i]->getTag();
+        }
+
+        $statement = $pdo->prepare('
+            INSERT INTO article_tags (article_id, user_id, tag_name)
+            VALUES ' . $values . '
+            RETURNING id
+        ');
+        $statement->execute($bindParams);
+
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        $result = [];
+        foreach ($tags as $key => $tag) {
+            $result[] = new ArticleTag(
+                user_id: $tag->getUserId(),
+                tag_name: $tag->getTag(),
+                id: (int)$rows[$key]['id'],
+                article_id: $tag->getArticleId()
+            );
+        }
+
+        return $result;
+    }
+
+    private static function deleteTagsByArticleIdAndUserId(PDO $pdo, int $article_id, int $user_id): void
+    {
+        $statement = $pdo->prepare('
+            DELETE FROM article_tags WHERE article_id = :article_id AND user_id = :user_id
+        ');
+        $statement->execute([
+            'article_id' => $article_id,
+            'user_id' => $user_id
         ]);
     }
 }

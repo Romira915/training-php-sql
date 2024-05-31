@@ -8,6 +8,7 @@ use Exception;
 use PDO;
 use Romira\Zenita\Feature\Article\Application\DTO\CreatePublishedArticleDTO;
 use Romira\Zenita\Feature\Article\Domain\Entities\ArticleImage;
+use Romira\Zenita\Feature\Article\Domain\Entities\ArticleTag;
 use Romira\Zenita\Feature\Article\Domain\Entities\PublishedArticle;
 use Romira\Zenita\Feature\Article\Domain\Exception\InvalidImageLimitException;
 use Romira\Zenita\Feature\Article\Domain\Repositories\ImageStorageInterface;
@@ -26,10 +27,15 @@ class CreatePublishArticleUseCase
         try {
             $image_path = $imageStorage->moveUploadedFile($publishedArticleDTO->thumbnail_image_path);
             $thumbnail = new ArticleImage(user_id: $publishedArticleDTO->user_id, image_path: $image_path);
-            
+
             $images = array_map(
                 fn($image_path) => new ArticleImage(user_id: $publishedArticleDTO->user_id, image_path: $imageStorage->moveUploadedFile($image_path)),
                 $publishedArticleDTO->image_path_list
+            );
+
+            $tags = array_map(
+                fn($tag) => new ArticleTag(user_id: $publishedArticleDTO->user_id, tag_name: $tag),
+                $publishedArticleDTO->tags
             );
 
             $article = new PublishedArticle(
@@ -37,7 +43,8 @@ class CreatePublishArticleUseCase
                 title: $publishedArticleDTO->title,
                 body: $publishedArticleDTO->body,
                 thumbnail: $thumbnail,
-                images: $images
+                images: $images,
+                tags: $tags
             );
 
             $articleRepository::save($pdo, $article);

@@ -20,7 +20,9 @@ class PublishedArticle
         private ArticleImage $thumbnail,
         /** @var array<ArticleImage> */
         private array        $images,
-        private ?int         $id = null,
+        /** @var array<ArticleTag> */
+        private array        $tags,
+        private ?int         $id = null
     )
     {
         $this->setImages($images);
@@ -68,5 +70,10 @@ class PublishedArticle
     public function getImages(): array
     {
         return $this->images;
+    }
+
+    public function getTags(): array
+    {
+        return $this->tags;
     }
 }

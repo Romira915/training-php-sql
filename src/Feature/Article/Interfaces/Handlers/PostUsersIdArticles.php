@@ -53,7 +53,8 @@ class PostUsersIdArticles implements HandlerInterface
             $createArticleRequest->title,
             $createArticleRequest->body,
             $createArticleRequest->thumbnail_file['tmp_name'],
-            array_map(fn($image) => $image['tmp_name'], $createArticleRequest->image_files)
+            array_map(fn($image) => $image['tmp_name'], $createArticleRequest->image_files),
+            $createArticleRequest->tags
         );
 
         CreatePublishArticleUseCase::run($pdo, $articleRepository, $imageStorage, $createPublishedArticleDTO);
