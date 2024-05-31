@@ -51,7 +51,7 @@ class IndexViewHelper extends ViewHelper
     private function createArticleFormElement(): string
     {
         return '
-            <form class="flex flex-col gap-4 items-center w-fit" action="/articles" method="post" enctype="multipart/form-data">
+            <form class="flex flex-col gap-4 items-center w-fit" action="/users/1/articles" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
                 <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="title" >タイトル</label>
@@ -64,6 +64,10 @@ class IndexViewHelper extends ViewHelper
                 <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="thumbnail">サムネイル</label>
                     <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png, image/gif" class="" required>
+                </div>
+                <div class="flex flex-col items-start gap-2 justify-between w-full">
+                    <label for="images">画像</label>
+                    <input type="file" id="images" name="images[]" accept="image/jpeg, image/png, image/gif" multiple>
                 </div>
                 <button type="submit" class="bg-gray-300 px-4 py-1 rounded hover:bg-gray-400">投稿</button>
             </form>

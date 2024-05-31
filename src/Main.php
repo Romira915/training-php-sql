@@ -9,9 +9,9 @@ use Romira\Zenita\Common\Interfaces\Routes\Route;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\GetIndex;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\GetUsersIdArticlesId;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\GetUsersIdArticlesIdEdit;
-use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostArticles;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdArticleIdDelete;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdArticleIdEdit;
+use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdArticles;
 
 
 class Main
@@ -26,7 +26,7 @@ class Main
 
         $route
             ->get('/', new GetIndex())
-            ->post('/articles', new PostArticles())
+            ->post('/users/{user_id}/articles', new PostUsersIdArticles())
             ->get('/users/{user_id}/articles/{article_id}', new GetUsersIdArticlesId())
             ->get('/users/{user_id}/articles/{article_id}/edit', new GetUsersIdArticlesIdEdit())
             ->post('/users/{user_id}/articles/{article_id}/edit', new PostUsersIdArticleIdEdit())

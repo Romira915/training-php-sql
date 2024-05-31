@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Romira\Zenita\Feature\Article\Interfaces\Handlers;
 
 use Exception;
-use Monolog\Level;
+use InvalidArgumentException;
 use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Persistence\PostgresqlConnection;
@@ -14,42 +14,46 @@ use Romira\Zenita\Feature\Article\Application\DTO\CreatePublishedArticleDTO;
 use Romira\Zenita\Feature\Article\Application\UseCases\CreatePublishArticleUseCase;
 use Romira\Zenita\Feature\Article\Infrastructure\FileStorage\ImageLocalStorage;
 use Romira\Zenita\Feature\Article\Infrastructure\Persistence\PublishedArticleRepository;
+use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidArticleParameterException;
 use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidUploadImageException;
-use Romira\Zenita\Feature\Article\Interfaces\Validator\BodyValidator;
-use Romira\Zenita\Feature\Article\Interfaces\Validator\TitleValidator;
-use Romira\Zenita\Feature\Article\Interfaces\Validator\UploadImageValidator;
-use Romira\Zenita\Utils\Logger\LoggerFactory;
+use Romira\Zenita\Feature\Article\Interfaces\Http\PostUsersIdArticlesRequest;
+use Romira\Zenita\Utils\File;
 
-class PostArticles implements HandlerInterface
+class PostUsersIdArticles implements HandlerInterface
 {
     /**
      * @throws Exception
      */
     public static function handle(HttpRequest $request, array $matches): HttpResponse
     {
-        $logger = LoggerFactory::createLogger('PostArticles', Level::Debug);
+        $createArticleRequest = PostUsersIdArticlesRequest::new(
+            $matches['user_id'],
+            $request->post['title'] ?? '',
+            $request->post['body'] ?? '',
+            $request->files['thumbnail'] ?? [],
+            File::reshapeFilesArray($request->files['images'] ?? [])
+        );
 
-        if (!isset($request->files['thumbnail'])) {
-            throw new InvalidUploadImageException('Invalid image');
+        if ($createArticleRequest instanceof InvalidArgumentException) {
+            return new HttpResponse(statusCode: 400, body: 'Invalid user_id');
         }
-        $image = $request->files['thumbnail'];
-
-        $e = UploadImageValidator::validate($image);
-        if ($e instanceof InvalidUploadImageException) {
-            $logger->info('File: ' . $e->getFile() . ' Line: ' . $e->getLine() . ' Message: ' . $e->getMessage(), ['exception' => $e]);
-            return new HttpResponse(statusCode: 400, body: "Invalid Upload Image");
-        }
-
-        $title = $request->post['title'] ?? '';
-        $body = $request->post['body'] ?? '';
-        if (!TitleValidator::validate($title) || !BodyValidator::validate($body)) {
+        if ($createArticleRequest instanceof InvalidArticleParameterException) {
             return new HttpResponse(statusCode: 400, body: 'Invalid title or body');
+        }
+        if ($createArticleRequest instanceof InvalidUploadImageException) {
+            return new HttpResponse(statusCode: 400, body: 'Invalid Upload image');
         }
 
         $pdo = PostgresqlConnection::connect();
         $articleRepository = new PublishedArticleRepository();
         $imageStorage = new ImageLocalStorage($request->server['DOCUMENT_ROOT']);
-        $createPublishedArticleDTO = new CreatePublishedArticleDTO(user_id: 1, title: $title, body: $body, thumbnail_image_path: $image['tmp_name']);
+        $createPublishedArticleDTO = new CreatePublishedArticleDTO(
+            $createArticleRequest->user_id,
+            $createArticleRequest->title,
+            $createArticleRequest->body,
+            $createArticleRequest->thumbnail_file['tmp_name'],
+            array_map(fn($image) => $image['tmp_name'], $createArticleRequest->image_files)
+        );
 
         CreatePublishArticleUseCase::run($pdo, $articleRepository, $imageStorage, $createPublishedArticleDTO);
 
