@@ -62,6 +62,11 @@ readonly class PostUsersIdArticlesRequest
             return $upload_image_validator;
         }
 
+        // 画像がアップロードされていない場合は空の配列にする
+        if (isset($image_files[0]['size']) && $image_files[0]['size'] === 0) {
+            $image_files = [];
+        }
+
         foreach ($image_files as $image_file) {
             $upload_image_validator = UploadImageValidator::validate($image_file);
             if ($upload_image_validator instanceof InvalidUploadImageException) {
