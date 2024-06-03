@@ -13,7 +13,6 @@ class HttpRequest
         public ?string $uri = null,
         public array   $get = [],
         public array   $post = [],
-        public array   $session = [],
         public array   $files = [],
         public array   $server = [],
         public array   $cookie = [],

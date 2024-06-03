@@ -42,7 +42,6 @@ class Main
             $_SERVER['REQUEST_URI'],
             $_GET,
             $_POST,
-            $_SESSION ?? [],
             $_FILES,
             $_SERVER,
             $_COOKIE,

@@ -7,13 +7,14 @@ namespace Romira\Zenita\Feature\Article\Interfaces\Handlers;
 use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Persistence\PostgresqlConnection;
-use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
+use Romira\Zenita\Common\Interfaces\Handlers\SessionHandlerInterface;
+use Romira\Zenita\Common\Interfaces\Session\Session;
 use Romira\Zenita\Feature\Article\Infrastructure\QueryServices\ArticleDetailQueryService;
 use Romira\Zenita\Feature\Article\Presentation\PublishedArticleDetailPageViewHelper;
 
-class GetUsersIdArticlesId implements HandlerInterface
+class GetUsersIdArticlesId implements SessionHandlerInterface
 {
-    public static function handle(HttpRequest $request, array $matches): HttpResponse
+    public static function handle(HttpRequest $request, array $matches, ?Session &$session = null): HttpResponse
     {
         if (!is_numeric($matches['user_id']) || !is_numeric($matches['article_id'])) {
             return new HttpResponse(statusCode: 404, body: 'Not Found');

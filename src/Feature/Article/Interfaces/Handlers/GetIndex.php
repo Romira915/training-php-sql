@@ -8,18 +8,19 @@ use Exception;
 use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Persistence\PostgresqlConnection;
-use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
+use Romira\Zenita\Common\Interfaces\Handlers\SessionHandlerInterface;
+use Romira\Zenita\Common\Interfaces\Session\Session;
 use Romira\Zenita\Feature\Article\Infrastructure\QueryServices\ArticleSummaryQueryService;
 use Romira\Zenita\Feature\Article\Presentation\IndexViewHelper;
 
-class GetIndex implements HandlerInterface
+class GetIndex implements SessionHandlerInterface
 {
     public const int ARTICLE_LIMIT = 20;
 
     /**
      * @throws Exception
      */
-    public static function handle(HttpRequest $request, array $matches): HttpResponse
+    public static function handle(HttpRequest $request, array $matches, ?Session &$session = null): HttpResponse
     {
         $limit = $request->get['limit'] ?? self::ARTICLE_LIMIT;
         $limit = (int)$limit;
