@@ -13,6 +13,7 @@ use Romira\Zenita\Feature\Article\Domain\Entities\PublishedArticle;
 use Romira\Zenita\Feature\Article\Domain\Exception\InvalidImageLimitException;
 use Romira\Zenita\Feature\Article\Domain\Repositories\ImageStorageInterface;
 use Romira\Zenita\Feature\Article\Domain\Repositories\PublishedArticleRepositoryInterface;
+use Romira\Zenita\Feature\Article\Domain\ValueObject\ArticleTagList;
 use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidUploadImageException;
 
 class CreatePublishArticleUseCase
@@ -44,7 +45,7 @@ class CreatePublishArticleUseCase
                 body: $publishedArticleDTO->body,
                 thumbnail: $thumbnail,
                 images: $images,
-                tags: $tags
+                tags: new ArticleTagList($tags)
             );
 
             $articleRepository::save($pdo, $article);

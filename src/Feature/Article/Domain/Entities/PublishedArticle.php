@@ -5,30 +5,27 @@ declare(strict_types=1);
 namespace Romira\Zenita\Feature\Article\Domain\Entities;
 
 use Romira\Zenita\Feature\Article\Domain\Exception\InvalidImageLimitException;
-use Romira\Zenita\Feature\Article\Domain\Exception\InvalidTagsLimitException;
+use Romira\Zenita\Feature\Article\Domain\ValueObject\ArticleTagList;
 
 class PublishedArticle
 {
     const int MAX_IMAGES = 20;
-    const int MAX_TAGS = 10;
 
     /**
-     * @throws InvalidImageLimitException|InvalidTagsLimitException
+     * @throws InvalidImageLimitException
      */
     public function __construct(
-        private int          $user_id,
-        private string       $title,
-        private string       $body,
-        private ArticleImage $thumbnail,
+        private int            $user_id,
+        private string         $title,
+        private string         $body,
+        private ArticleImage   $thumbnail,
         /** @var array<ArticleImage> */
-        private array        $images,
-        /** @var array<ArticleTag> */
-        private array        $tags,
-        private ?int         $id = null
+        private array          $images,
+        private ArticleTagList $tags,
+        private ?int           $id = null
     )
     {
         $this->setImages($images);
-        $this->setTags($tags);
     }
 
     public function getId(): int|null
@@ -75,19 +72,7 @@ class PublishedArticle
         return $this->images;
     }
 
-    /**
-     * @throws InvalidTagsLimitException
-     */
-    public function setTags(array $tags): void
-    {
-        if (count($tags) > self::MAX_TAGS) {
-            throw new InvalidTagsLimitException('タグの登録数は最大' . self::MAX_TAGS . '個までです。');
-        }
-
-        $this->tags = $tags;
-    }
-
-    public function getTags(): array
+    public function getTags(): ArticleTagList
     {
         return $this->tags;
     }

@@ -8,10 +8,17 @@ use PDO;
 use Romira\Zenita\Feature\Article\Domain\Entities\ArticleImage;
 use Romira\Zenita\Feature\Article\Domain\Entities\ArticleTag;
 use Romira\Zenita\Feature\Article\Domain\Entities\PublishedArticle;
+use Romira\Zenita\Feature\Article\Domain\Exception\InvalidImageLimitException;
+use Romira\Zenita\Feature\Article\Domain\Exception\InvalidTagsLimitException;
 use Romira\Zenita\Feature\Article\Domain\Repositories\PublishedArticleRepositoryInterface;
+use Romira\Zenita\Feature\Article\Domain\ValueObject\ArticleTagList;
 
 class PublishedArticleRepository implements PublishedArticleRepositoryInterface
 {
+    /**
+     * @throws InvalidTagsLimitException
+     * @throws InvalidImageLimitException
+     */
     public static function save(PDO $pdo, PublishedArticle $article): PublishedArticle
     {
         if ($article->getId() !== null) {
@@ -55,7 +62,7 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
                 id: $tag->getId(),
                 article_id: $article_id
             ),
-            $article->getTags()
+            $article->getTags()->all()
         );
         if (count($tags) > 0) {
             self::deleteTagsByArticleIdAndUserId($pdo, $article_id, $article->getUserId());
@@ -68,7 +75,7 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
             body: $article->getBody(),
             thumbnail: $thumbnail,
             images: $images,
-            tags: $tags,
+            tags: new ArticleTagList($tags),
             id: $article_id
         );
 
@@ -77,6 +84,10 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
         return $article;
     }
 
+    /**
+     * @throws InvalidImageLimitException
+     * @throws InvalidTagsLimitException
+     */
     public static function findByUserIdAndArticleId(PDO $pdo, int $user_id, int $article_id): PublishedArticle|null
     {
         $statement = $pdo->prepare("
@@ -157,7 +168,7 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
                 article_id: $article_id
             ),
             images: $image_list,
-            tags: $tags,
+            tags: new ArticleTagList($tags),
             id: (int)$row['article_id'],
         );
     }
