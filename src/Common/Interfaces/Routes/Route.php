@@ -26,10 +26,10 @@ class Route
 
     /**
      * @param string $route
-     * @param HandlerInterface $handler
+     * @param HandlerInterface|SessionHandlerInterface $handler
      * @return $this
      */
-    public function get(string $route, HandlerInterface $handler): Route
+    public function get(string $route, HandlerInterface|SessionHandlerInterface $handler): Route
     {
         $this->routes['GET'][$route] = $handler;
 
@@ -38,10 +38,10 @@ class Route
 
     /**
      * @param string $route
-     * @param HandlerInterface $handler
+     * @param HandlerInterface|SessionHandlerInterface $handler
      * @return $this
      */
-    public function post(string $route, HandlerInterface $handler): Route
+    public function post(string $route, HandlerInterface|SessionHandlerInterface $handler): Route
     {
         $this->routes['POST'][$route] = $handler;
 
@@ -65,15 +65,13 @@ class Route
             $pattern = $this->createPattern($route);
 
             if (preg_match($pattern, $request_uri, $matches)) {
-                $session = null;
-                if ($handler instanceof SessionHandlerInterface) {
+                $response = null;
+                if ($handler instanceof HandlerInterface) {
+                    $response = $handler::handle($this->httpRequest, $matches);
+                } else if ($handler instanceof SessionHandlerInterface) {
                     $this->sessionHandler::start();
                     $session = new Session($this->sessionHandler::getAll());
-                }
-
-                $response = $handler->handle($this->httpRequest, $matches, $session);
-
-                if ($handler instanceof SessionHandlerInterface) {
+                    $response = $handler::handle($this->httpRequest, $matches, $session);
                     $this->sessionHandler::setAll($session->all());
                 }
 
