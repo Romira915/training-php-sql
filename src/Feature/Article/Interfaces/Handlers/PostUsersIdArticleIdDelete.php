@@ -11,6 +11,7 @@ use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Http\SeeOtherResponse;
 use Romira\Zenita\Common\Infrastructure\Persistence\PostgresqlConnection;
 use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
+use Romira\Zenita\Common\Interfaces\Session\Session;
 use Romira\Zenita\Feature\Article\Application\DTO\DeletePublishedArticleDTO;
 use Romira\Zenita\Feature\Article\Application\UseCases\DeletePublishedArticleUseCase;
 use Romira\Zenita\Feature\Article\Infrastructure\FileStorage\ImageLocalStorage;
@@ -20,7 +21,7 @@ use Romira\Zenita\Utils\Logger\LoggerFactory;
 
 class PostUsersIdArticleIdDelete implements HandlerInterface
 {
-    public static function handle(HttpRequest $request, array $matches): HttpResponse
+    public static function handle(HttpRequest $request, array $matches, ?Session &$session = null): HttpResponse
     {
         $deleteRequest = PostUsersIdArticlesIdDeleteRequest::new($matches['user_id'], $matches['article_id']);
 

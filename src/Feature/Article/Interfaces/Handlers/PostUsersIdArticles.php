@@ -10,6 +10,7 @@ use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Persistence\PostgresqlConnection;
 use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
+use Romira\Zenita\Common\Interfaces\Session\Session;
 use Romira\Zenita\Feature\Article\Application\DTO\CreatePublishedArticleDTO;
 use Romira\Zenita\Feature\Article\Application\UseCases\CreatePublishArticleUseCase;
 use Romira\Zenita\Feature\Article\Infrastructure\FileStorage\ImageLocalStorage;
@@ -24,7 +25,7 @@ class PostUsersIdArticles implements HandlerInterface
     /**
      * @throws Exception
      */
-    public static function handle(HttpRequest $request, array $matches): HttpResponse
+    public static function handle(HttpRequest $request, array $matches, ?Session &$session = null): HttpResponse
     {
         $createArticleRequest = PostUsersIdArticlesRequest::new(
             $matches['user_id'],

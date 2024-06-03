@@ -10,6 +10,7 @@ use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Http\SeeOtherResponse;
 use Romira\Zenita\Common\Infrastructure\Persistence\PostgresqlConnection;
 use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
+use Romira\Zenita\Common\Interfaces\Session\Session;
 use Romira\Zenita\Feature\Article\Application\DTO\UpdatePublishedArticleDTO;
 use Romira\Zenita\Feature\Article\Application\UseCases\UpdatePublishedArticleUseCase;
 use Romira\Zenita\Feature\Article\Infrastructure\Persistence\PublishedArticleRepository;
@@ -18,7 +19,7 @@ use Romira\Zenita\Feature\Article\Interfaces\Http\PostUsersIdArticleIdEditReques
 
 class PostUsersIdArticleIdEdit implements HandlerInterface
 {
-    public static function handle(HttpRequest $request, array $matches): HttpResponse
+    public static function handle(HttpRequest $request, array $matches, ?Session &$session = null): HttpResponse
     {
         $editArticleRequest = PostUsersIdArticleIdEditRequest::new($matches['user_id'], $matches['article_id'], $request->post['title'] ?? '', $request->post['body'] ?? '');
 

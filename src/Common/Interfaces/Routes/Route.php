@@ -8,15 +8,20 @@ use Exception;
 use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
+use Romira\Zenita\Common\Interfaces\Handlers\SessionHandlerInterface;
+use Romira\Zenita\Common\Interfaces\Session\Session;
+use Romira\Zenita\Common\Interfaces\Session\SessionHandler;
 
 class Route
 {
     private array $routes = [];
     private HttpRequest $httpRequest;
+    private SessionHandler $sessionHandler;
 
-    public function __construct(HttpRequest $httpRequest)
+    public function __construct(HttpRequest $httpRequest, SessionHandler $sessionHandler = new SessionHandler())
     {
         $this->httpRequest = $httpRequest;
+        $this->sessionHandler = $sessionHandler;
     }
 
     /**
@@ -60,7 +65,18 @@ class Route
             $pattern = $this->createPattern($route);
 
             if (preg_match($pattern, $request_uri, $matches)) {
-                $response = $handler->handle($this->httpRequest, $matches);
+                $session = null;
+                if ($handler instanceof SessionHandlerInterface) {
+                    $this->sessionHandler::start();
+                    $session = new Session($this->sessionHandler::getAll());
+                }
+
+                $response = $handler->handle($this->httpRequest, $matches, $session);
+
+                if ($handler instanceof SessionHandlerInterface) {
+                    $this->sessionHandler::setAll($session->all());
+                }
+
                 $response->emit();
                 return;
             }

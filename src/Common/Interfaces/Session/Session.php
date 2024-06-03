@@ -6,22 +6,22 @@ namespace Romira\Zenita\Common\Interfaces\Session;
 
 class Session
 {
-    public function __construct()
+    public function __construct(private array $session = [])
     {
     }
 
     public function get(string $key): mixed
     {
-        return $_SESSION[$key] ?? null;
+        return $this->session[$key] ?? null;
     }
 
     public function set(string $key, mixed $value): void
     {
-        $_SESSION[$key] = $value;
+        $this->session[$key] = $value;
     }
 
-    public function start(): void
+    public function all(): array
     {
-        session_start();
+        return $this->session;
     }
 }

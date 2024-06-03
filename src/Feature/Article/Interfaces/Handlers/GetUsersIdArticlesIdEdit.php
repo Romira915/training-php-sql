@@ -9,13 +9,14 @@ use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Persistence\PostgresqlConnection;
 use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
+use Romira\Zenita\Common\Interfaces\Session\Session;
 use Romira\Zenita\Feature\Article\Infrastructure\QueryServices\ArticleDetailEditQueryService;
 use Romira\Zenita\Feature\Article\Interfaces\Http\GetUsersIdArticlesIdEditRequest;
 use Romira\Zenita\Feature\Article\Presentation\ArticleDetailEditPageViewHelper;
 
 class GetUsersIdArticlesIdEdit implements HandlerInterface
 {
-    public static function handle(HttpRequest $request, array $matches): HttpResponse
+    public static function handle(HttpRequest $request, array $matches, ?Session &$session = null): HttpResponse
     {
         $editArticlePageRequest = GetUsersIdArticlesIdEditRequest::new($matches['user_id'], $matches['article_id']);
 

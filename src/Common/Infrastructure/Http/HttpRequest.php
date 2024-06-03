@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Romira\Zenita\Common\Infrastructure\Http;
 
 use InvalidArgumentException;
-use Romira\Zenita\Common\Interfaces\Session\Session;
 
 class HttpRequest
 {
@@ -14,7 +13,6 @@ class HttpRequest
         public ?string $uri = null,
         public array   $get = [],
         public array   $post = [],
-        public Session $session = new Session(),
         public array   $files = [],
         public array   $server = [],
         public array   $cookie = [],
