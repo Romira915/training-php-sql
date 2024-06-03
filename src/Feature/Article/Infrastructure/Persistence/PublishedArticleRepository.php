@@ -11,6 +11,7 @@ use Romira\Zenita\Feature\Article\Domain\Entities\PublishedArticle;
 use Romira\Zenita\Feature\Article\Domain\Exception\InvalidImageLimitException;
 use Romira\Zenita\Feature\Article\Domain\Exception\InvalidTagsLimitException;
 use Romira\Zenita\Feature\Article\Domain\Repositories\PublishedArticleRepositoryInterface;
+use Romira\Zenita\Feature\Article\Domain\ValueObject\ArticleImageList;
 use Romira\Zenita\Feature\Article\Domain\ValueObject\ArticleTagList;
 
 class PublishedArticleRepository implements PublishedArticleRepositoryInterface
@@ -47,7 +48,7 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
                 id: $image->getId(),
                 article_id: $article_id
             ),
-            $article->getImages()
+            $article->getImages()->all()
         );
         if (count($images) > 0) {
             // thumbnail以外の画像を削除
@@ -74,7 +75,7 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
             title: $article->getTitle(),
             body: $article->getBody(),
             thumbnail: $thumbnail,
-            images: $images,
+            images: new ArticleImageList($images),
             tags: new ArticleTagList($tags),
             id: $article_id
         );
@@ -167,7 +168,7 @@ class PublishedArticleRepository implements PublishedArticleRepositoryInterface
                 id: (int)$row['thumbnail_id'],
                 article_id: $article_id
             ),
-            images: $image_list,
+            images: new ArticleImageList($image_list),
             tags: new ArticleTagList($tags),
             id: (int)$row['article_id'],
         );
