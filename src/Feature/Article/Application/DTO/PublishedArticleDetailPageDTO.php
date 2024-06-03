@@ -14,6 +14,8 @@ readonly class PublishedArticleDetailPageDTO
         public string $thumbnail_image_url,
         /** @var array<string> */
         public array  $image_url_list,
+        /** @var array<string> */
+        public array  $tags,
         public string $created_at,
         public string $updated_at,
     )

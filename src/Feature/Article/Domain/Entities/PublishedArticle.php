@@ -4,28 +4,32 @@ declare(strict_types=1);
 
 namespace Romira\Zenita\Feature\Article\Domain\Entities;
 
-use Romira\Zenita\Feature\Article\Domain\Exception\InvalidImageLimitException;
+use Romira\Zenita\Feature\Article\Domain\ValueObject\ArticleImageList;
+use Romira\Zenita\Feature\Article\Domain\ValueObject\ArticleTagList;
 
 class PublishedArticle
 {
     const int MAX_IMAGES = 20;
 
     /**
-     * @throws InvalidImageLimitException
+     * @param int $user_id
+     * @param string $title
+     * @param string $body
+     * @param ArticleImage $thumbnail
+     * @param ArticleImageList $images
+     * @param ArticleTagList $tags
+     * @param int|null $id
      */
     public function __construct(
-        private int          $user_id,
-        private string       $title,
-        private string       $body,
-        private ArticleImage $thumbnail,
-        /** @var array<ArticleImage> */
-        private array        $images,
-        /** @var array<ArticleTag> */
-        private array        $tags,
-        private ?int         $id = null
+        private int              $user_id,
+        private string           $title,
+        private string           $body,
+        private ArticleImage     $thumbnail,
+        private ArticleImageList $images,
+        private ArticleTagList   $tags,
+        private ?int             $id = null
     )
     {
-        $this->setImages($images);
     }
 
     public function getId(): int|null
@@ -53,26 +57,12 @@ class PublishedArticle
         return $this->thumbnail;
     }
 
-    /**
-     * @param array<ArticleImage> $images
-     * @return void
-     * @throws InvalidImageLimitException
-     */
-    public function setImages(array $images): void
-    {
-        if (count($images) > self::MAX_IMAGES) {
-            throw new InvalidImageLimitException('画像のアップロード数は最大' . self::MAX_IMAGES . '枚までです。');
-        }
-
-        $this->images = $images;
-    }
-
-    public function getImages(): array
+    public function getImages(): ArticleImageList
     {
         return $this->images;
     }
 
-    public function getTags(): array
+    public function getTags(): ArticleTagList
     {
         return $this->tags;
     }
