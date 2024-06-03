@@ -6,6 +6,7 @@ namespace Romira\Zenita;
 
 use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Interfaces\Routes\Route;
+use Romira\Zenita\Common\Interfaces\Session\Session;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\GetIndex;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\GetUsersIdArticlesId;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\GetUsersIdArticlesIdEdit;
@@ -42,7 +43,7 @@ class Main
             $_SERVER['REQUEST_URI'],
             $_GET,
             $_POST,
-            $_SESSION ?? [],
+            new Session(),
             $_FILES,
             $_SERVER,
             $_COOKIE,
