@@ -7,7 +7,7 @@ namespace Romira\Zenita\Feature\Auth\Infrastructure\Persistence;
 use PDO;
 use Romira\Zenita\Feature\Auth\Domain\Entities\AuthUser;
 
-class UserRepository
+class AuthUserRepository
 {
     public static function create(PDO $pdo, AuthUser $user): AuthUser
     {
