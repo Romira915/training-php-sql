@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Romira\Zenita\Feature\User\Domain\Entities;
+namespace Romira\Zenita\Feature\Auth\Domain\Entities;
 
-class User
+class AuthUser
 {
     public function __construct(
         private string $display_name,
