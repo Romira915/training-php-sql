@@ -1,3 +1,21 @@
+-- Create test user data
+DO
+$$
+    DECLARE
+        user_id INT;
+    BEGIN
+        FOR i IN 1..100
+            LOOP
+                INSERT INTO users DEFAULT VALUES RETURNING id INTO user_id;
+                INSERT INTO user_detail (user_id, display_name, icon_path)
+                VALUES (user_id, 'testuser' || user_id, '/images/icon.png');
+                -- password: password
+                INSERT INTO user_hashed_password (user_id, hashed_password)
+                VALUES (user_id, '$2y$10$P/ds2511WmZRZlAf3.DZIu.EOubgcqxNpdO32ONQcO0R6fvlpvM0m');
+            END LOOP;
+    END;
+$$;
+
 DO
 $$
     DECLARE
