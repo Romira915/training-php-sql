@@ -20,6 +20,18 @@ class Session
         $this->session[$key] = $value;
     }
 
+    public function delete(string $key): void
+    {
+        unset($this->session[$key]);
+    }
+
+    public function flash(string $key): mixed
+    {
+        $value = $this->get($key);
+        $this->delete($key);
+        return $value;
+    }
+
     public function all(): array
     {
         return $this->session;
