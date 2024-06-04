@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Romira\Zenita\Feature\Article\Interfaces\Validator;
+namespace Romira\Zenita\Feature\Auth\Interfaces\Validator;
 
 use Romira\Zenita\Common\Interfaces\Exception\InvalidUploadImageException;
 
-class UploadImageValidator
+class UploadedImageValidator
 {
     const int MAX_FILE_SIZE = 1024 * 1024 * 10; // 10MiB
     const array ALLOWED_MIME_TYPES = [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF];

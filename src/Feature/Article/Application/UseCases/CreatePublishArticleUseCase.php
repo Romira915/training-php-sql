@@ -6,6 +6,7 @@ namespace Romira\Zenita\Feature\Article\Application\UseCases;
 
 use Exception;
 use PDO;
+use Romira\Zenita\Common\Interfaces\Exception\InvalidUploadImageException;
 use Romira\Zenita\Feature\Article\Application\DTO\CreatePublishedArticleDTO;
 use Romira\Zenita\Feature\Article\Domain\Entities\ArticleImage;
 use Romira\Zenita\Feature\Article\Domain\Entities\ArticleTag;
@@ -15,7 +16,6 @@ use Romira\Zenita\Feature\Article\Domain\Repositories\ImageStorageInterface;
 use Romira\Zenita\Feature\Article\Domain\Repositories\PublishedArticleRepositoryInterface;
 use Romira\Zenita\Feature\Article\Domain\ValueObject\ArticleImageList;
 use Romira\Zenita\Feature\Article\Domain\ValueObject\ArticleTagList;
-use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidUploadImageException;
 
 class CreatePublishArticleUseCase
 {

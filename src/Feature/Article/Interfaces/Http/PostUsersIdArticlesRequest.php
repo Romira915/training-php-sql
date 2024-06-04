@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Romira\Zenita\Feature\Article\Interfaces\Http;
 
 use InvalidArgumentException;
+use Romira\Zenita\Common\Interfaces\Exception\InvalidUploadImageException;
 use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidArticleParameterException;
-use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidUploadImageException;
 use Romira\Zenita\Feature\Article\Interfaces\Validator\BodyValidator;
 use Romira\Zenita\Feature\Article\Interfaces\Validator\TagValidator;
 use Romira\Zenita\Feature\Article\Interfaces\Validator\TitleValidator;

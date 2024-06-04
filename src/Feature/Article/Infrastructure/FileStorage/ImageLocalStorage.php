@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Romira\Zenita\Feature\Article\Infrastructure\FileStorage;
 
+use Romira\Zenita\Common\Interfaces\Exception\InvalidUploadImageException;
 use Romira\Zenita\Config\Config;
 use Romira\Zenita\Feature\Article\Domain\Repositories\ImageStorageInterface;
-use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidUploadImageException;
 use Romira\Zenita\Utils\File;
 use Romira\Zenita\Utils\Random\Random;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Romira\Zenita\Feature\Article\Domain\Repositories;
 
-use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidUploadImageException;
+use Romira\Zenita\Common\Interfaces\Exception\InvalidUploadImageException;
 
 interface ImageStorageInterface
 {

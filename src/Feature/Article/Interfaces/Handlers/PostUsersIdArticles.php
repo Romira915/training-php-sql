@@ -9,13 +9,13 @@ use InvalidArgumentException;
 use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Persistence\PostgresqlConnection;
+use Romira\Zenita\Common\Interfaces\Exception\InvalidUploadImageException;
 use Romira\Zenita\Common\Interfaces\Handlers\HandlerInterface;
 use Romira\Zenita\Feature\Article\Application\DTO\CreatePublishedArticleDTO;
 use Romira\Zenita\Feature\Article\Application\UseCases\CreatePublishArticleUseCase;
 use Romira\Zenita\Feature\Article\Infrastructure\FileStorage\ImageLocalStorage;
 use Romira\Zenita\Feature\Article\Infrastructure\Persistence\PublishedArticleRepository;
 use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidArticleParameterException;
-use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidUploadImageException;
 use Romira\Zenita\Feature\Article\Interfaces\Http\PostUsersIdArticlesRequest;
 use Romira\Zenita\Utils\File;
 
