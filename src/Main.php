@@ -12,6 +12,8 @@ use Romira\Zenita\Feature\Article\Interfaces\Handlers\GetUsersIdArticlesIdEdit;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdArticleIdDelete;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdArticleIdEdit;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdArticles;
+use Romira\Zenita\Feature\Auth\Interfaces\Handlers\GetAuthLogin;
+use Romira\Zenita\Feature\Auth\Interfaces\Handlers\GetAuthRegister;
 
 
 class Main
@@ -30,7 +32,9 @@ class Main
             ->get('/users/{user_id}/articles/{article_id}', new GetUsersIdArticlesId())
             ->get('/users/{user_id}/articles/{article_id}/edit', new GetUsersIdArticlesIdEdit())
             ->post('/users/{user_id}/articles/{article_id}/edit', new PostUsersIdArticleIdEdit())
-            ->post('/users/{user_id}/articles/{article_id}/delete', new PostUsersIdArticleIdDelete());
+            ->post('/users/{user_id}/articles/{article_id}/delete', new PostUsersIdArticleIdDelete())
+            ->get('/auth/login', new GetAuthLogin())
+            ->get('/auth/register', new GetAuthRegister());
 
         $route->run();
     }
