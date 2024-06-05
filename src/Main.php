@@ -14,6 +14,7 @@ use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdArticleIdEdit;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdArticles;
 use Romira\Zenita\Feature\Auth\Interfaces\Handlers\GetAuthLogin;
 use Romira\Zenita\Feature\Auth\Interfaces\Handlers\GetAuthRegister;
+use Romira\Zenita\Feature\Auth\Interfaces\Handlers\PostAuthLogin;
 use Romira\Zenita\Feature\Auth\Interfaces\Handlers\PostAuthRegister;
 
 
@@ -35,6 +36,7 @@ class Main
             ->post('/users/{user_id}/articles/{article_id}/edit', new PostUsersIdArticleIdEdit())
             ->post('/users/{user_id}/articles/{article_id}/delete', new PostUsersIdArticleIdDelete())
             ->get('/auth/login', new GetAuthLogin())
+            ->post('/auth/login', new PostAuthLogin())
             ->get('/auth/register', new GetAuthRegister())
             ->post('/auth/register', new PostAuthRegister());
 
