@@ -72,4 +72,5 @@ Temporary Items
 .idea/
 /logs/
 public/images/*
-public/users/*
+public/users/icons/*
+!public/users/icons/default_user_icon.png
