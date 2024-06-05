@@ -8,7 +8,7 @@ $$
             LOOP
                 INSERT INTO users DEFAULT VALUES RETURNING id INTO user_id;
                 INSERT INTO user_detail (user_id, display_name, icon_path)
-                VALUES (user_id, 'testuser' || user_id, '/images/icon.png');
+                VALUES (user_id, 'testuser' || user_id, '/users/icons/default_user_icon.png');
                 -- password: password
                 INSERT INTO user_hashed_password (user_id, hashed_password)
                 VALUES (user_id, '$2y$10$P/ds2511WmZRZlAf3.DZIu.EOubgcqxNpdO32ONQcO0R6fvlpvM0m');
@@ -35,6 +35,7 @@ $$
                 VALUES (article_id, 1, '/images/image.png');
                 INSERT INTO article_detail (article_id, user_id, title, body, thumbnail_id)
                 VALUES (article_id, 1, 'title ' || article_id, 'body ' || article_id, thumbnail_id);
+                INSERT INTO article_tags (article_id, user_id, tag_name) VALUES (article_id, 1, 'tag' || article_id);
             END LOOP;
     END;
 $$;

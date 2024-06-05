@@ -45,7 +45,36 @@ class IndexViewHelper extends ViewHelper
 
     private function createServiceNameElement(): string
     {
-        return '<h1 class="text-4xl py-4">Zenita</h1>';
+        return '
+            <nav class="flex items-center justify-between bg-cyan-200 w-dvw px-4 mb-4">
+                <h1 class="text-4xl py-4">Zenita</h1>
+                <div>' . $this->createLogoutFormElement() . '
+                </div>
+            </nav>
+        ';
+    }
+
+    private function createLoginButtonElement(): string
+    {
+        return '
+            <a class="text-lg py-1 px-3 bg-cyan-400 hover:bg-cyan-500 rounded-lg" href="/auth/login">Login</a>
+        ';
+    }
+
+    private function createLogoutFormElement(): string
+    {
+        return '
+            <form class="" action="/auth/logout" method="post">
+                <button type="submit" class="text-lg py-1 px-3 rounded-lg bg-gray-300 rounded hover:bg-gray-400">Logout</button>
+            </form>
+        ';
+    }
+
+    private function createUserIconElement(): string
+    {
+        return '
+            <img class="" src="' . '/users/icons/default_user_icon.png' . '" alt="user_icon" width="50" height="50">
+        ';
     }
 
     private function createArticleFormElement(): string
@@ -93,16 +122,22 @@ class IndexViewHelper extends ViewHelper
     private function createArticleElement(TopPagePublishedArticleSummaryDTO $article): string
     {
         return '
-            <li class="flex flex-col">
+            <li class="flex flex-col gap-1 items-center w-full">
                 <form class="self-end w-fit" method="post" action="/users/' . $article->user_id . '/articles/' . $article->id . '/delete" onSubmit="return CheckDelete()">
                     <button type="submit" class="text-red-500 underline">Delete</button>
                 </form>
-                <a href="/users/' . htmlspecialchars((string)$article->user_id) . '/articles/' . htmlspecialchars((string)$article->id) . '">
-                    <article class="article">
-                        <h2 class="article__title">' . htmlspecialchars($article->title) . '</h2>
-                        <p class="article__body">' . htmlspecialchars($article->body) . '</p>
-                        <img class="article__thumbnail" src="' . htmlspecialchars($article->thumbnail_url) . '" alt="' . htmlspecialchars($article->thumbnail_url) . '" width="300" height="255">
+                <a class="w-full" href="/users/' . htmlspecialchars((string)$article->user_id) . '/articles/' . htmlspecialchars((string)$article->id) . '">
+                    <article class="bg-cyan-200 flex flex-col items-start px-4 py-2">
+                        <h2 class="">' . htmlspecialchars($article->title) . '</h2>
+                        <p class="">' . htmlspecialchars($article->body) . '</p>
+                        <img class="self-center" src="' . htmlspecialchars($article->thumbnail_url) . '" alt="' . htmlspecialchars($article->thumbnail_url) . '" width="300" height="255">
                         ' . $this->createTagsElement($article->tags) . '
+                        <div class="flex items-center gap-2">
+                            <img class="user__icon
+                            " src="' . htmlspecialchars($article->user_icon_path) . '" alt="' . htmlspecialchars($article->user_icon_path) . '" width="50" height="50">
+                            <p class="text-sm">' . htmlspecialchars($article->user_display_name) . '</p>
+                            <p class="text-sm">' . htmlspecialchars($article->created_at) . '</p>
+                        </div>
                     </article>
                 </a>            
             </li>

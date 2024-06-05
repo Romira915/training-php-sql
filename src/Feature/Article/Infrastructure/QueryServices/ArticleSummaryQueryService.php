@@ -28,13 +28,26 @@ readonly class ArticleSummaryQueryService implements ArticleSummaryQueryServiceI
                    ai.image_path AS thumbnail_url,
                    ad.created_at,
                    ad.updated_at,
-                   json_agg(at.tag_name) AS tags
+                   json_agg(at.tag_name) AS tags,
+                   ud.display_name AS user_display_name,
+                   ud.icon_path AS user_icon_path
             FROM articles as a
                      INNER JOIN article_published AS ap ON a.id = ap.article_id AND a.user_id = ap.user_id
                      INNER JOIN article_detail AS ad ON a.id = ad.article_id AND a.user_id = ad.user_id
                      INNER JOIN article_images AS ai ON ad.thumbnail_id = ai.id
                      LEFT JOIN article_tags AS at ON a.id = at.article_id AND a.user_id = at.user_id
-            GROUP BY a.id, ad.user_id, ad.title, ad.body, ai.image_path, ad.created_at, ad.updated_at
+                     INNER JOIN users AS u ON ap.user_id = u.id
+                     INNER JOIN user_detail AS ud ON u.id = ud.user_id
+            GROUP BY 
+                a.id, 
+                ad.user_id, 
+                ad.title, 
+                ad.body, 
+                ai.image_path, 
+                ad.created_at, 
+                ad.updated_at,
+                ud.display_name,
+                ud.icon_path
             ORDER BY ad.created_at DESC
             LIMIT :limit
             ');
@@ -58,7 +71,10 @@ readonly class ArticleSummaryQueryService implements ArticleSummaryQueryServiceI
                 title: $r['title'],
                 body: $r['body'],
                 thumbnail_image_path: $r['thumbnail_url'],
-                tags: $tags
+                tags: $tags,
+                user_display_name: $r['user_display_name'],
+                user_icon_path: $r['user_icon_path'],
+                created_at: $r['created_at'],
             );
         }
 
