@@ -48,8 +48,14 @@ class IndexViewHelper extends ViewHelper
         return '
             <nav class="flex items-center justify-between bg-cyan-200 w-dvw px-4 mb-4">
                 <h1 class="text-4xl py-4">Zenita</h1>
-                <div>' . $this->createLogoutFormElement() . '
-                </div>
+                <script src="/js/get_users_me.js" defer></script>
+                <div id="login-form-container" class="">' .
+            $this->createLoginButtonElement() .
+            '</div>
+                <div id="user-info-container" class="hidden flex items-center gap-1">' .
+            $this->createUserIconElement() .
+            $this->createLogoutFormElement() .
+            '</div>
             </nav>
         ';
     }
@@ -73,7 +79,7 @@ class IndexViewHelper extends ViewHelper
     private function createUserIconElement(): string
     {
         return '
-            <img class="" src="' . '/users/icons/default_user_icon.png' . '" alt="user_icon" width="50" height="50">
+            <img id="logged-in-user-icon" class="" src="/users/icons/default_user_icon.png" alt="user_icon" width="50" height="50">
         ';
     }
 
