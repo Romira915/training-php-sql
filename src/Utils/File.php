@@ -6,6 +6,11 @@ namespace Romira\Zenita\Utils;
 
 class File
 {
+    public static function copy(string $from, string $to): bool
+    {
+        return copy($from, $to);
+    }
+
     public static function moveUploadedFile(string $source, string $destination): bool
     {
         return move_uploaded_file($source, $destination);

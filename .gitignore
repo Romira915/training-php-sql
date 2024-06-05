@@ -72,3 +72,4 @@ Temporary Items
 .idea/
 /logs/
 public/images/*
+public/users/*
