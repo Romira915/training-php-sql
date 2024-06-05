@@ -26,4 +26,9 @@ class CurrentUserSession
     {
         return $this->session->get(self::CURRENT_USER_ID_KEY);
     }
+
+    public function logout(): void
+    {
+        $this->session->delete(self::CURRENT_USER_ID_KEY);
+    }
 }
