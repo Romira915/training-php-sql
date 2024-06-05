@@ -17,7 +17,6 @@ use Romira\Zenita\Feature\Auth\Interfaces\Handlers\GetAuthRegister;
 use Romira\Zenita\Feature\Auth\Interfaces\Handlers\PostAuthLogin;
 use Romira\Zenita\Feature\Auth\Interfaces\Handlers\PostAuthLogout;
 use Romira\Zenita\Feature\Auth\Interfaces\Handlers\PostAuthRegister;
-use Romira\Zenita\Feature\user\Interfaces\Handlers\GetUsersMe;
 
 
 class Main
@@ -41,8 +40,7 @@ class Main
             ->post('/auth/login', new PostAuthLogin())
             ->get('/auth/register', new GetAuthRegister())
             ->post('/auth/register', new PostAuthRegister())
-            ->post('/auth/logout', new PostAuthLogout())
-            ->get('/users/me', new GetUsersMe());
+            ->post('/auth/logout', new PostAuthLogout());
 
         $route->run();
     }
