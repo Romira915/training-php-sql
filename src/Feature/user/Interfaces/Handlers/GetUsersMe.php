@@ -26,7 +26,7 @@ class GetUsersMe implements SessionHandlerInterface
         $pdo = PostgresqlConnection::connect();
         $currentUser = CurrentUserServiceQuery::getCurrentUserById($pdo, $currentUserSession->getCurrentUser() ?? 0);
 
-        return new HttpResponse(200, ['Content-Type' => 'application/json'], json_encode([
+        return new HttpResponse(200, ['Content-Type' => 'application/json', 'Cache-Control' => 'no-store'], json_encode([
             'display_name' => $currentUser->display_name,
             'icon_path' => $currentUser->icon_path,
             'message' => 'OK',
