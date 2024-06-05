@@ -10,8 +10,8 @@ use Romira\Zenita\Utils\File;
 
 class UserIconImageLocalStorage implements UserIconImageStorageInterface
 {
-    const string DEFAULT_ICON_PATH = __DIR__ . '/../../../../../assets/default_user_icon.png';
     const string USER_ICON_PATH_PREFIX = '/users/icons/';
+    const string DEFAULT_ICON_PATH = self::USER_ICON_PATH_PREFIX . 'default_user_icon.png';
 
     public function __construct(
         private readonly string $rootDir
@@ -35,15 +35,8 @@ class UserIconImageLocalStorage implements UserIconImageStorageInterface
         return $dir . $fileName;
     }
 
-    /**
-     * @throws InvalidUploadImageException
-     */
-    public function copyDefaultIcon(string $displayName): string
+    public function getDefaultIconPath(): string
     {
-        if (!File::copy(self::DEFAULT_ICON_PATH, $this->rootDir . self::USER_ICON_PATH_PREFIX . $displayName)) {
-            throw new InvalidUploadImageException('Failed to copy default icon');
-        }
-
-        return self::USER_ICON_PATH_PREFIX . $displayName;
+        return self::DEFAULT_ICON_PATH;
     }
 }

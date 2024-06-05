@@ -8,5 +8,5 @@ interface UserIconImageStorageInterface
 {
     public function moveUploadedFile(string $tmpName, string $displayName): string;
 
-    public function copyDefaultIcon(string $displayName): string;
+    public function getDefaultIconPath(): string;
 }

@@ -30,7 +30,7 @@ class RegisterAuthUserUseCase
             if ($authUserDTO->icon_path !== null) {
                 $icon_path = $iconImageStorage->moveUploadedFile($authUserDTO->icon_path, $authUserDTO->displayName);
             } else {
-                $icon_path = $iconImageStorage->copyDefaultIcon($authUserDTO->displayName);
+                $icon_path = $iconImageStorage->getDefaultIconPath();
             }
 
             $hashed_password = password_hash($authUserDTO->password, PASSWORD_DEFAULT);
