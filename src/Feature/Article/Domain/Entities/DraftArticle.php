@@ -13,7 +13,7 @@ class DraftArticle
      * @param int $user_id
      * @param string $title
      * @param string $body
-     * @param ArticleImage $thumbnail
+     * @param ArticleImage|null $thumbnail
      * @param ArticleImageList $images
      * @param ArticleTagList $tags
      * @param int|null $id
@@ -22,7 +22,7 @@ class DraftArticle
         private int              $user_id,
         private string           $title,
         private string           $body,
-        private ArticleImage     $thumbnail,
+        private ?ArticleImage    $thumbnail,
         private ArticleImageList $images,
         private ArticleTagList   $tags,
         private ?int             $id = null
@@ -50,7 +50,7 @@ class DraftArticle
         return $this->body;
     }
 
-    public function getThumbnail(): ArticleImage
+    public function getThumbnail(): ?ArticleImage
     {
         return $this->thumbnail;
     }
