@@ -48,7 +48,7 @@ readonly class PostUsersIdArticlesRequest
     {
     }
 
-    public static function new(string $user_id, string $title, string $body, array $thumbnail_file, array $image_files, string $tags_row): PostUsersIdArticlesRequest|InvalidArgumentException|InvalidArticleParameterException|InvalidUploadImageException
+    public static function new(string|int $user_id, string $title, string $body, array $thumbnail_file, array $image_files, string $tags_row): PostUsersIdArticlesRequest|InvalidArgumentException|InvalidArticleParameterException|InvalidUploadImageException
     {
         if (!is_numeric($user_id)) {
             return new InvalidArgumentException('Invalid user_id');

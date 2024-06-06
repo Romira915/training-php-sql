@@ -13,8 +13,9 @@ class IndexViewHelper extends ViewHelper
     /**
      * @param array<TopPagePublishedArticleSummaryDTO> $articles
      * @param CurrentUserDTO|null $currentUserDTO
+     * @param string|null $errorMessage
      */
-    public function __construct(private array $articles, private ?CurrentUserDTO $currentUserDTO = null)
+    public function __construct(private array $articles, private ?CurrentUserDTO $currentUserDTO = null, private ?string $errorMessage = null)
     {
         parent::__construct();
     }
@@ -28,6 +29,14 @@ class IndexViewHelper extends ViewHelper
 
     private function createBody(): string
     {
+        if ($this->errorMessage) {
+            $errorElement = "
+                <p class='text-red-500'>{$this->errorMessage}</p>
+            ";
+        } else {
+            $errorElement = '';
+        }
+
         return "
             {$this->createCheckDeleteScript()}
             <div class='root'>
@@ -35,6 +44,7 @@ class IndexViewHelper extends ViewHelper
                     {$this->createServiceNameElement()}
                 </header>
                 <main class='flex flex-col items-center'>
+                    {$errorElement}
                     {$this->createArticleFormElement()}
                     <section>
                         {$this->createArticlesElement()}
@@ -93,8 +103,10 @@ class IndexViewHelper extends ViewHelper
 
     private function createArticleFormElement(): string
     {
+        $user_id = $this->currentUserDTO ? $this->currentUserDTO->id : 0;
+
         return '
-            <form class="flex flex-col gap-4 items-center w-fit" action="/users/1/articles" method="post" enctype="multipart/form-data">
+            <form class="flex flex-col gap-4 items-center w-fit" action="/users/' . $user_id . '/articles" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
                 <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="title" >タイトル</label>
@@ -135,11 +147,18 @@ class IndexViewHelper extends ViewHelper
 
     private function createArticleElement(TopPagePublishedArticleSummaryDTO $article): string
     {
-        return '
-            <li class="flex flex-col gap-1 items-center w-full">
+        $deleteFormElement = '';
+        if ($this->currentUserDTO && $this->currentUserDTO->id === $article->user_id) {
+            $deleteFormElement = '
                 <form class="self-end w-fit" method="post" action="/users/' . $article->user_id . '/articles/' . $article->id . '/delete" onSubmit="return CheckDelete()">
                     <button type="submit" class="text-red-500 underline">Delete</button>
                 </form>
+            ';
+        }
+
+        return '
+            <li class="flex flex-col gap-1 items-center w-full">'
+            . $deleteFormElement . '
                 <a class="w-full" href="/users/' . htmlspecialchars((string)$article->user_id) . '/articles/' . htmlspecialchars((string)$article->id) . '">
                     <article class="bg-cyan-200 flex flex-col items-start px-4 py-2">
                         <h2 class="">' . htmlspecialchars($article->title) . '</h2>

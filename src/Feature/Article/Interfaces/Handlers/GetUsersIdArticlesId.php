@@ -8,6 +8,7 @@ use Romira\Zenita\Common\Infrastructure\Http\HttpRequest;
 use Romira\Zenita\Common\Infrastructure\Http\HttpResponse;
 use Romira\Zenita\Common\Infrastructure\Persistence\PostgresqlConnection;
 use Romira\Zenita\Common\Interfaces\Handlers\SessionHandlerInterface;
+use Romira\Zenita\Common\Interfaces\Session\CurrentUserSession;
 use Romira\Zenita\Common\Interfaces\Session\Session;
 use Romira\Zenita\Feature\Article\Infrastructure\QueryServices\ArticleDetailQueryService;
 use Romira\Zenita\Feature\Article\Presentation\PublishedArticleDetailPageViewHelper;
@@ -32,7 +33,10 @@ class GetUsersIdArticlesId implements SessionHandlerInterface
             return new HttpResponse(statusCode: 404, body: 'Not Found');
         }
 
-        $helper = new PublishedArticleDetailPageViewHelper($articleDetail);
+        $currentUserSession = new CurrentUserSession($session);
+        $isOwner = $currentUserSession->getCurrentUser() === $user_id;
+
+        $helper = new PublishedArticleDetailPageViewHelper($articleDetail, $isOwner);
         $html = $helper->render();
 
         return new HttpResponse(statusCode: 200, body: $html);
