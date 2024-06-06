@@ -106,7 +106,7 @@ class IndexViewHelper extends ViewHelper
         $user_id = $this->currentUserDTO ? $this->currentUserDTO->id : 0;
 
         return '
-            <form class="flex flex-col gap-4 items-center w-fit" action="/users/' . $user_id . '/articles" method="post" enctype="multipart/form-data">
+            <form id="articleForm" class="flex flex-col gap-4 items-center w-fit" action="/users/' . $user_id . '/articles" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
                 <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="title" >タイトル</label>
@@ -129,9 +129,12 @@ class IndexViewHelper extends ViewHelper
                     <input class="w-[400px] p-1" type="text" id="tags" name="tags" required>
                     <p class="text-xs">※タグはカンマ区切りで入力してください</p>
                 </div>
-                <button type="submit" class="bg-gray-300 px-4 py-1 rounded hover:bg-gray-400">投稿</button>
+                <div class="flex gap-8">
+                    <button type="submit" class="px-4 py-1 rounded-lg bg-gray-300 hover:bg-gray-400" data-action="/users/' . $user_id . '/draft-articles">下書き</button>
+                    <button type="submit" class="bg-cyan-400 hover:bg-cyan-500 rounded-lg px-4 py-1" data-action="/users/' . $user_id . '/articles">投稿</button>
+                </div>
             </form>
-        ';
+            ' . $this->createSubmitArticleScript();
     }
 
     private function createArticlesElement(): string
@@ -161,8 +164,8 @@ class IndexViewHelper extends ViewHelper
             . $deleteFormElement . '
                 <a class="w-full" href="/users/' . htmlspecialchars((string)$article->user_id) . '/articles/' . htmlspecialchars((string)$article->id) . '">
                     <article class="bg-cyan-200 flex flex-col items-start px-4 py-2">
-                        <h2 class="">' . htmlspecialchars($article->title) . '</h2>
-                        <p class="">' . htmlspecialchars($article->body) . '</p>
+                        <h2 class="text-2xl font-bold">' . htmlspecialchars($article->title) . '</h2>
+                        <p class="text-lg line-clamp-3">' . htmlspecialchars($article->body) . '</p>
                         <img class="self-center" src="' . htmlspecialchars($article->thumbnail_url) . '" alt="' . htmlspecialchars($article->thumbnail_url) . '" width="300" height="255">
                         ' . $this->createTagsElement($article->tags) . '
                         <div class="flex items-center gap-2">
@@ -172,7 +175,7 @@ class IndexViewHelper extends ViewHelper
                             <p class="text-sm">' . htmlspecialchars($article->created_at) . '</p>
                         </div>
                     </article>
-                </a>            
+                </a>
             </li>
         ';
     }
@@ -198,6 +201,17 @@ class IndexViewHelper extends ViewHelper
                 function CheckDelete() {
                     return confirm('Are you sure you want to delete?');
                 }
+            </script>
+        ";
+    }
+
+    private function createSubmitArticleScript(): string
+    {
+        return "
+            <script>
+                document.addEventListener('click', (e) => {
+                    document.getElementById('articleForm').action = e.target.getAttribute('data-action');
+                });
             </script>
         ";
     }
