@@ -13,8 +13,9 @@ class IndexViewHelper extends ViewHelper
     /**
      * @param array<TopPagePublishedArticleSummaryDTO> $articles
      * @param CurrentUserDTO|null $currentUserDTO
+     * @param string|null $errorMessage
      */
-    public function __construct(private array $articles, private ?CurrentUserDTO $currentUserDTO = null)
+    public function __construct(private array $articles, private ?CurrentUserDTO $currentUserDTO = null, private ?string $errorMessage = null)
     {
         parent::__construct();
     }
@@ -28,6 +29,14 @@ class IndexViewHelper extends ViewHelper
 
     private function createBody(): string
     {
+        if ($this->errorMessage) {
+            $errorElement = "
+                <p class='text-red-500'>{$this->errorMessage}</p>
+            ";
+        } else {
+            $errorElement = '';
+        }
+
         return "
             {$this->createCheckDeleteScript()}
             <div class='root'>
@@ -35,6 +44,7 @@ class IndexViewHelper extends ViewHelper
                     {$this->createServiceNameElement()}
                 </header>
                 <main class='flex flex-col items-center'>
+                    {$errorElement}
                     {$this->createArticleFormElement()}
                     <section>
                         {$this->createArticlesElement()}

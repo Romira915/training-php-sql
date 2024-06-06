@@ -13,6 +13,7 @@ use Romira\Zenita\Common\Interfaces\Handlers\SessionHandlerInterface;
 use Romira\Zenita\Common\Interfaces\Session\CurrentUserSession;
 use Romira\Zenita\Common\Interfaces\Session\Session;
 use Romira\Zenita\Feature\Article\Infrastructure\QueryServices\ArticleSummaryQueryService;
+use Romira\Zenita\Feature\Article\Interfaces\Handlers\Session\TopPageErrorSession;
 use Romira\Zenita\Feature\Article\Presentation\IndexViewHelper;
 
 class GetIndex implements SessionHandlerInterface
@@ -42,7 +43,8 @@ class GetIndex implements SessionHandlerInterface
             $currentUserDTO = CurrentUserServiceQuery::getCurrentUserById($pdo, $currentUserId);
         }
 
-        $helper = new IndexViewHelper($articles, $currentUserDTO);
+        $topPageErrorSession = new TopPageErrorSession($session);
+        $helper = new IndexViewHelper($articles, $currentUserDTO, $topPageErrorSession->flashTopPageErrorMessage());
         $html = $helper->render();
 
         return new HttpResponse(statusCode: 200, body: $html);
