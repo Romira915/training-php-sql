@@ -18,7 +18,7 @@ use Romira\Zenita\Feature\Article\Infrastructure\FileStorage\ImageLocalStorage;
 use Romira\Zenita\Feature\Article\Infrastructure\Persistence\DraftArticleRepository;
 use Romira\Zenita\Feature\Article\Interfaces\Exception\InvalidArticleParameterException;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\Session\TopPageErrorSession;
-use Romira\Zenita\Feature\Article\Interfaces\Http\PostUsersIdArticlesRequest;
+use Romira\Zenita\Feature\Article\Interfaces\Http\PostUsersIdDraftArticlesRequest;
 use Romira\Zenita\Utils\File;
 
 class PostUsersIdDraftArticles implements SessionHandlerInterface
@@ -33,11 +33,11 @@ class PostUsersIdDraftArticles implements SessionHandlerInterface
 
         $currentUserId = $currentUserSession->getCurrentUser();
 
-        $createArticleRequest = PostUsersIdArticlesRequest::new(
+        $createArticleRequest = PostUsersIdDraftArticlesRequest::new(
             $currentUserId,
             $request->post['title'] ?? '',
             $request->post['body'] ?? '',
-            $request->files['thumbnail'] ?? [],
+            $request->files['thumbnail'] ?? null,
             File::reshapeFilesArray($request->files['images'] ?? []),
             $request->post['tags'] ?? ''
         );
@@ -59,7 +59,7 @@ class PostUsersIdDraftArticles implements SessionHandlerInterface
             $createArticleRequest->user_id,
             $createArticleRequest->title,
             $createArticleRequest->body,
-            $createArticleRequest->thumbnail_file['tmp_name'],
+            $createArticleRequest->thumbnail_file['tmp_name'] ?? null,
             array_map(fn($image) => $image['tmp_name'], $createArticleRequest->image_files),
             $createArticleRequest->tags
         );

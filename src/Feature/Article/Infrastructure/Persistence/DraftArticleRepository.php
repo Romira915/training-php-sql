@@ -24,16 +24,18 @@ class DraftArticleRepository
         }
         self::createDraftArticleIfNotExists($pdo, $article_id, $article->getUserId());
 
-        $thumbnail = new ArticleImage(
-            user_id: $article->getThumbnail()->getUserId(),
-            image_path: $article->getThumbnail()->getImagePath(),
-            id: $article->getThumbnail()->getId(),
-            article_id: $article_id
-        );
-        if ($thumbnail->getId() === null) {
-            $thumbnail = self::createArticleImage($pdo, $thumbnail);
-        } else {
-            self::updateArticleImage($pdo, $thumbnail);
+        if (!is_null($article->getThumbnail())) {
+            $thumbnail = new ArticleImage(
+                user_id: $article->getThumbnail()->getUserId(),
+                image_path: $article->getThumbnail()->getImagePath(),
+                id: $article->getThumbnail()->getId(),
+                article_id: $article_id
+            );
+            if ($thumbnail->getId() === null) {
+                $thumbnail = self::createArticleImage($pdo, $thumbnail);
+            } else {
+                self::updateArticleImage($pdo, $thumbnail);
+            }
         }
 
         $images = array_map(
@@ -47,7 +49,7 @@ class DraftArticleRepository
         );
         if (count($images) > 0) {
             // thumbnail以外の画像を削除
-            self::deleteArticleImagesByArticleIdAndUserIdExcludeThumbnail($pdo, $article_id, $article->getUserId(), $thumbnail->getId());
+            self::deleteArticleImagesByArticleIdAndUserIdExcludeThumbnail($pdo, $article_id, $article->getUserId(), $thumbnail ? $thumbnail->getId() : 0);
             $images = self::createArticleImages($pdo, $images);
         }
 
@@ -306,7 +308,7 @@ class DraftArticleRepository
         ]);
     }
 
-    private static function deleteArticleImagesByArticleIdAndUserIdExcludeThumbnail(PDO $pdo, int $article_id, int $user_id, $thumbnail_id): void
+    private static function deleteArticleImagesByArticleIdAndUserIdExcludeThumbnail(PDO $pdo, int $article_id, int $user_id, int $thumbnail_id): void
     {
         $statement = $pdo->prepare('
             DELETE FROM article_images WHERE article_id = :article_id AND user_id = :user_id AND id != :thumbnail_id

@@ -35,8 +35,10 @@ class CreateDraftArticleUseCase
     {
         $pdo->beginTransaction();
         try {
-            $image_path = $imageStorage->moveUploadedFile($draftArticleDTO->thumbnail_image_path);
-            $thumbnail = new ArticleImage(user_id: $draftArticleDTO->user_id, image_path: $image_path);
+            if (!is_null($draftArticleDTO->thumbnail_image_path)) {
+                $image_path = $imageStorage->moveUploadedFile($draftArticleDTO->thumbnail_image_path);
+                $thumbnail = new ArticleImage(user_id: $draftArticleDTO->user_id, image_path: $image_path);
+            }
 
             $images = array_map(
                 fn($image_path) => new ArticleImage(user_id: $draftArticleDTO->user_id, image_path: $imageStorage->moveUploadedFile($image_path)),
@@ -52,7 +54,7 @@ class CreateDraftArticleUseCase
                 user_id: $draftArticleDTO->user_id,
                 title: $draftArticleDTO->title,
                 body: $draftArticleDTO->body,
-                thumbnail: $thumbnail,
+                thumbnail: $thumbnail ?? null,
                 images: new ArticleImageList($images),
                 tags: new ArticleTagList($tags)
             );
