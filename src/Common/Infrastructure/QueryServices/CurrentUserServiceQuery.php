@@ -12,7 +12,7 @@ class CurrentUserServiceQuery
     public static function getCurrentUserById(PDO $pdo, int $user_id): CurrentUserDTO|null
     {
         $statement = $pdo->prepare('
-            SELECT display_name, icon_path
+            SELECT id, display_name, icon_path
             FROM users
                 INNER JOIN user_detail AS ud ON users.id = ud.user_id
             WHERE id = :user_id
@@ -28,6 +28,7 @@ class CurrentUserServiceQuery
         }
 
         return new CurrentUserDTO(
+            id: $row['id'],
             display_name: $row['display_name'],
             icon_path: $row['icon_path'],
         );
