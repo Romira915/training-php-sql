@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Romira\Zenita\Feature\Article\Presentation;
 
+use Romira\Zenita\Common\Application\DTO\CurrentUserDTO;
 use Romira\Zenita\Common\Presentation\ViewHelper;
 use Romira\Zenita\Feature\Article\Application\DTO\TopPagePublishedArticleSummaryDTO;
 
 class IndexViewHelper extends ViewHelper
 {
-    /** @var array<TopPagePublishedArticleSummaryDTO> */
-    private array $articles;
-
-    public function __construct(array $articles)
+    /**
+     * @param array<TopPagePublishedArticleSummaryDTO> $articles
+     * @param CurrentUserDTO|null $currentUserDTO
+     */
+    public function __construct(private array $articles, private ?CurrentUserDTO $currentUserDTO = null)
     {
-        $this->articles = $articles;
         parent::__construct();
     }
 
@@ -45,11 +46,24 @@ class IndexViewHelper extends ViewHelper
 
     private function createServiceNameElement(): string
     {
+        if ($this->currentUserDTO === null) {
+            $userInfoElement = '
+            <div class="">' .
+                $this->createLoginButtonElement() .
+                '</div>
+            ';
+        } else {
+            $userInfoElement = '
+            <div class="flex items-center gap-1">' .
+                $this->createUserIconElement($this->currentUserDTO) .
+                $this->createLogoutFormElement() .
+                '</div>';
+        }
+
         return '
             <nav class="flex items-center justify-between bg-cyan-200 w-dvw px-4 mb-4">
                 <h1 class="text-4xl py-4">Zenita</h1>
-                <div>' . $this->createLogoutFormElement() . '
-                </div>
+                ' . $userInfoElement . '
             </nav>
         ';
     }
@@ -70,10 +84,10 @@ class IndexViewHelper extends ViewHelper
         ';
     }
 
-    private function createUserIconElement(): string
+    private function createUserIconElement(CurrentUserDTO $currentUser): string
     {
         return '
-            <img class="" src="' . '/users/icons/default_user_icon.png' . '" alt="user_icon" width="50" height="50">
+            <img id="logged-in-user-icon" class="" alt="user_icon" title="' . $currentUser->display_name . '" src="' . $currentUser->icon_path . '" alt="user_icon" width="50" height="50">
         ';
     }
 

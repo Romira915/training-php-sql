@@ -32,7 +32,7 @@ class UserIconImageLocalStorage implements UserIconImageStorageInterface
             throw new InvalidUploadImageException('Failed to move uploaded file');
         }
 
-        return $dir . $fileName;
+        return self::USER_ICON_PATH_PREFIX . $fileName;
     }
 
     public function getDefaultIconPath(): string
