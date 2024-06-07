@@ -230,7 +230,8 @@ class IndexViewHelper extends ViewHelper
                         for (const input of form.querySelectorAll('input, textarea')) {
                             input.required = true;
                         }
-                        form.querySelector('input[name=images[]]').required = false;
+                        form.querySelector('#thumbnail').required = false;
+                        form.querySelector('#images').required = false;
                     }
                 });
             </script>
