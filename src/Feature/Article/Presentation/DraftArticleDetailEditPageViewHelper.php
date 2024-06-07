@@ -79,7 +79,7 @@ class DraftArticleDetailEditPageViewHelper extends ViewHelper
                 </div>
                 <div class="flex gap-8">
                     <button id="draft-submit-button" type="submit" class="bg-gray-300 px-4 py-1 rounded hover:bg-gray-400" data-action="/users/' . $this->articleDetail->user_id . '/draft-articles/' . $this->articleDetail->article_id . '/edit">下書き保存</button>
-                    <button id="post-submit-button" type="submit" class="bg-cyan-400 hover:bg-cyan-500 px-4 py-1 rounded" data-action="#todo">公開</button>
+                    <button id="post-submit-button" type="submit" class="bg-cyan-400 hover:bg-cyan-500 px-4 py-1 rounded" data-action="/users/' . $this->articleDetail->user_id . '/draft-articles/' . $this->articleDetail->article_id . '/publish">公開</button>
                 </div>
             </form>
         ' . $this->createSubmitArticleScript() . $this->createToggleArticleFormRequiredScript();
