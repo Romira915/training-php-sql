@@ -66,9 +66,9 @@ class PublishedArticleDetailPageViewHelper extends ViewHelper
     {
         return "
             <article class='flex flex-col px-8 py-4 gap-8 bg-gray-200'>
-                <h2 class='text-3xl font-bold'>{$this->articleDetail->title}</h2>
-                <img class='object-contain' src='{$this->articleDetail->thumbnail_image_url}' alt='{$this->articleDetail->title}' width='600' height='450' />
-                <p class=''>{$this->articleDetail->body}</p>
+                <h2 class='text-3xl font-bold'>" . htmlspecialchars($this->articleDetail->title) . "</h2>
+                <img class='object-contain' src='" . htmlspecialchars($this->articleDetail->thumbnail_image_url) . "' alt='" . htmlspecialchars($this->articleDetail->title) . "' width='600' height='450' />
+                <p class=''>" . htmlspecialchars($this->articleDetail->body) . "</p>
                 {$this->createImageListElement()}
                 {$this->createTagsElement($this->articleDetail->tags)}
             </article>

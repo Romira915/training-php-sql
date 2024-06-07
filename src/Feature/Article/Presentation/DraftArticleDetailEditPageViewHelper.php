@@ -56,33 +56,33 @@ class DraftArticleDetailEditPageViewHelper extends ViewHelper
             <form id="editArticleForm" class="flex flex-col gap-4 items-center w-fit" action=/users/' . $this->articleDetail->user_id . '/draft-articles/' . $this->articleDetail->article_id . '/edit method="post" enctype="multipart/form-data">
                 <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="title">タイトル</label>
-                    <input class="w-[400px] p-1" type="text" id="title" name="title" maxlength="100" value=' . $this->articleDetail->title . ' required>
+                    <input class="w-[400px] p-1" type="text" id="title" name="title" maxlength="100" value="' . htmlspecialchars($this->articleDetail->title) . '" required>
                 </div>
                 <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="body">本文</label>
-                    <textarea class="w-[400px] h-[' . $bodyHeight . 'px]' . ' p-2 leading-[20px]" id="body" name="body" maxlength="8000" required>' . $this->articleDetail->body . '</textarea>
+                    <textarea class="w-[400px] h-[' . $bodyHeight . 'px]' . ' p-2 leading-[20px]" id="body" name="body" maxlength="8000" required>' . htmlspecialchars($this->articleDetail->body) . '</textarea>
                 </div>
                 <div class="flex flex-col items-start gap-2 justify-between w-full">
-                    <label for="thumbnail_image">サムネイル画像</label>
-                    <img class="w-[200px]" src=' . $this->articleDetail->thumbnail_image_url . ' alt="thumbnail_image">
-                    <input class="w-[400px]" type="file" id="thumbnail_image" name="thumbnail_image" accept="image/jpeg, image/png, image/gif">
+                    <label for="thumbnail">サムネイル</label>
+                    <img class="w-[200px]" src=' . htmlspecialchars($this->articleDetail->thumbnail_image_url ?? "") . ' alt="thumbnail">
+                    <input class="w-[400px]" type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png, image/gif">
                 </div>
                 <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="images">画像</label>
                     ' . $this->createArticleImageElement() . '
-                    <input type="file" id="images" name="images" accept="image/jpeg, image/png, image/gif" multiple>
+                    <input type="file" id="images" name="images[]" accept="image/jpeg, image/png, image/gif" multiple>
                 </div>
                 <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="tags">タグ</label>
-                    <input class="w-[400px] p-1" type="text" id="tags" name="tags" required>
+                    <input class="w-[400px] p-1" type="text" id="tags" name="tags" value="' . htmlspecialchars(implode(',', $this->articleDetail->tags)) . '" required>
                     <p class="text-xs">※タグはカンマ区切りで入力してください</p>
                 </div>
                 <div class="flex gap-8">
-                    <button type="submit" class="bg-gray-300 px-4 py-1 rounded hover:bg-gray-400" data-action="/users/' . $this->articleDetail->user_id . '/draft-articles/' . $this->articleDetail->article_id . '/edit">下書き保存</button>
-                    <button type="submit" class="bg-cyan-400 hover:bg-cyan-500 px-4 py-1 rounded" data-action="#todo">公開</button>
+                    <button id="draft-submit-button" type="submit" class="bg-gray-300 px-4 py-1 rounded hover:bg-gray-400" data-action="/users/' . $this->articleDetail->user_id . '/draft-articles/' . $this->articleDetail->article_id . '/edit">下書き保存</button>
+                    <button id="post-submit-button" type="submit" class="bg-cyan-400 hover:bg-cyan-500 px-4 py-1 rounded" data-action="#todo">公開</button>
                 </div>
             </form>
-        ' . $this->createSubmitArticleScript();
+        ' . $this->createSubmitArticleScript() . $this->createToggleArticleFormRequiredScript();
     }
 
     private function createArticleImageElement(): string
@@ -102,6 +102,27 @@ class DraftArticleDetailEditPageViewHelper extends ViewHelper
             <script>
                 document.addEventListener('click', (e) => {
                     document.getElementById('editArticleForm').action = e.target.getAttribute('data-action');
+                });
+            </script>
+        ";
+    }
+
+    private function createToggleArticleFormRequiredScript(): string
+    {
+        return "
+            <script>
+                document.addEventListener('click', (e) => {
+                    const form = document.forms.namedItem('editArticleForm');
+                    if (e.target.id === 'draft-submit-button') {
+                        for (const input of form.querySelectorAll('input, textarea')) {
+                            input.required = false;
+                        }
+                    } else {
+                        for (const input of form.querySelectorAll('input, textarea')) {
+                            input.required = true;
+                        }
+                        form.querySelector('input[name=images[]]').required = false;
+                    }
                 });
             </script>
         ";

@@ -31,7 +31,7 @@ class IndexViewHelper extends ViewHelper
     {
         if ($this->errorMessage) {
             $errorElement = "
-                <p class='text-red-500'>{$this->errorMessage}</p>
+                <p class='text-red-500'>" . htmlspecialchars($this->errorMessage) . "</p>
             ";
         } else {
             $errorElement = '';
@@ -97,7 +97,7 @@ class IndexViewHelper extends ViewHelper
     private function createUserIconElement(CurrentUserDTO $currentUser): string
     {
         return '
-            <img id="logged-in-user-icon" class="" alt="user_icon" title="' . $currentUser->display_name . '" src="' . $currentUser->icon_path . '" alt="user_icon" width="50" height="50">
+            <img id="logged-in-user-icon" class="" alt="user_icon" title="' . htmlspecialchars($currentUser->display_name) . '" src="' . htmlspecialchars($currentUser->icon_path) . '" alt="user_icon" width="50" height="50">
         ';
     }
 
@@ -130,11 +130,11 @@ class IndexViewHelper extends ViewHelper
                     <p class="text-xs">※タグはカンマ区切りで入力してください</p>
                 </div>
                 <div class="flex gap-8">
-                    <button type="submit" class="px-4 py-1 rounded-lg bg-gray-300 hover:bg-gray-400" data-action="/users/' . $user_id . '/draft-articles">下書き</button>
-                    <button type="submit" class="bg-cyan-400 hover:bg-cyan-500 rounded-lg px-4 py-1" data-action="/users/' . $user_id . '/articles">投稿</button>
+                    <button id="draft-submit-button" type="submit" class="px-4 py-1 rounded-lg bg-gray-300 hover:bg-gray-400" data-action="/users/' . $user_id . '/draft-articles">下書き</button>
+                    <button id="post-submit-button" type="submit" class="bg-cyan-400 hover:bg-cyan-500 rounded-lg px-4 py-1" data-action="/users/' . $user_id . '/articles">投稿</button>
                 </div>
             </form>
-            ' . $this->createSubmitArticleScript();
+            ' . $this->createSubmitArticleScript() . $this->createToggleArticleFormRequiredScript();
     }
 
     private function createArticlesElement(): string
@@ -211,6 +211,27 @@ class IndexViewHelper extends ViewHelper
             <script>
                 document.addEventListener('click', (e) => {
                     document.getElementById('articleForm').action = e.target.getAttribute('data-action');
+                });
+            </script>
+        ";
+    }
+
+    private function createToggleArticleFormRequiredScript(): string
+    {
+        return "
+            <script>
+                document.addEventListener('click', (e) => {
+                    const form = document.forms.namedItem('articleForm');
+                    if (e.target.id === 'draft-submit-button') {
+                        for (const input of form.querySelectorAll('input, textarea')) {
+                            input.required = false;
+                        }
+                    } else {
+                        for (const input of form.querySelectorAll('input, textarea')) {
+                            input.required = true;
+                        }
+                        form.querySelector('input[name=images[]]').required = false;
+                    }
                 });
             </script>
         ";
