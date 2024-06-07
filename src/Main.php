@@ -15,6 +15,7 @@ use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdArticleIdEdit;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdArticles;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdDraftArticles;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdDraftArticlesIdEdit;
+use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdDraftArticlesIdPublish;
 use Romira\Zenita\Feature\Auth\Interfaces\Handlers\GetAuthLogin;
 use Romira\Zenita\Feature\Auth\Interfaces\Handlers\GetAuthRegister;
 use Romira\Zenita\Feature\Auth\Interfaces\Handlers\PostAuthLogin;
@@ -46,7 +47,8 @@ class Main
             ->post('/auth/logout', new PostAuthLogout())
             ->post('/users/{user_id}/draft-articles', new PostUsersIdDraftArticles())
             ->get('/users/{user_id}/draft-articles/{article_id}/edit', new GetUsersIdDraftArticlesIdEdit())
-            ->post('/users/{user_id}/draft-articles/{article_id}/edit', new PostUsersIdDraftArticlesIdEdit());
+            ->post('/users/{user_id}/draft-articles/{article_id}/edit', new PostUsersIdDraftArticlesIdEdit())
+            ->post('/users/{user_id}/draft-articles/{article_id}/publish', new PostUsersIdDraftArticlesIdPublish());
 
         $route->run();
     }
