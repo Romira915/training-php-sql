@@ -12,10 +12,11 @@ use Romira\Zenita\Feature\Article\Interfaces\Validator\DraftTitleValidator;
 use Romira\Zenita\Feature\Article\Interfaces\Validator\TagValidator;
 use Romira\Zenita\Feature\Article\Interfaces\Validator\UploadImageValidator;
 
-readonly class PostUsersIdDraftArticlesRequest
+readonly class PostUsersIdDraftArticlesIdEditRequest
 {
     private function __construct(
         public int    $user_id,
+        public int    $article_id,
         public string $title,
         public string $body,
         /** @var array{
@@ -48,10 +49,10 @@ readonly class PostUsersIdDraftArticlesRequest
     {
     }
 
-    public static function new(string|int $user_id, string $title, string $body, ?array $thumbnail_file, array $image_files, string $tags_row): PostUsersIdDraftArticlesRequest|InvalidArgumentException|InvalidArticleParameterException|InvalidUploadImageException
+    public static function new(string|int $user_id, string|int $article_id, string $title, string $body, ?array $thumbnail_file, array $image_files, string $tags_row): PostUsersIdDraftArticlesIdEditRequest|InvalidArgumentException|InvalidArticleParameterException|InvalidUploadImageException
     {
-        if (!is_numeric($user_id)) {
-            return new InvalidArgumentException('Invalid user_id');
+        if (!is_numeric($user_id) || !is_numeric($article_id)) {
+            return new InvalidArgumentException('Invalid user_id or article_id');
         }
 
         if (!DraftTitleValidator::validate($title) || !DraftBodyValidator::validate($body)) {
@@ -89,7 +90,7 @@ readonly class PostUsersIdDraftArticlesRequest
             }
         }
 
-        return new self((int)$user_id, $title, $body, $thumbnail_file, $image_files, $tags);
+        return new self((int)$user_id, (int)$article_id, $title, $body, $thumbnail_file, $image_files, $tags);
     }
 
     /**

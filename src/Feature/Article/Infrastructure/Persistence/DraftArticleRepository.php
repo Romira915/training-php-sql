@@ -71,7 +71,7 @@ class DraftArticleRepository
             user_id: $article->getUserId(),
             title: $article->getTitle(),
             body: $article->getBody(),
-            thumbnail: $thumbnail,
+            thumbnail: $thumbnail ?? null,
             images: new ArticleImageList($images),
             tags: new ArticleTagList($tags),
             id: $article_id
@@ -108,7 +108,7 @@ class DraftArticleRepository
             FROM article_detail AS ad
                      INNER JOIN articles AS a ON ad.article_id = a.id AND ad.user_id = a.user_id
                      INNER JOIN article_draft AS ap ON ad.article_id = ap.article_id AND ad.user_id = ap.user_id
-                     INNER JOIN article_images AS tnai ON ad.thumbnail_id = tnai.id
+                     LEFT JOIN article_images AS tnai ON ad.thumbnail_id = tnai.id
                      LEFT JOIN article_images AS ai ON ad.article_id = ai.article_id AND ad.user_id = ai.user_id
                      LEFT JOIN article_tags AS at ON ad.article_id = at.article_id AND ad.user_id = at.user_id
             WHERE ap.article_id = :article_id
@@ -159,12 +159,12 @@ class DraftArticleRepository
             user_id: (int)$row['user_id'],
             title: $row['title'],
             body: $row['body'],
-            thumbnail: new ArticleImage(
+            thumbnail: $row['thumbnail_id'] ? new ArticleImage(
                 user_id: $user_id,
                 image_path: $row['thumbnail_path'],
                 id: (int)$row['thumbnail_id'],
                 article_id: $article_id
-            ),
+            ) : null,
             images: new ArticleImageList($image_list),
             tags: new ArticleTagList($tags),
             id: (int)$row['article_id'],
@@ -229,7 +229,7 @@ class DraftArticleRepository
             'user_id' => $article->getUserId(),
             'title' => $article->getTitle(),
             'body' => $article->getBody(),
-            'thumbnail_id' => $article->getThumbnail()->getId()
+            'thumbnail_id' => $article->getThumbnail() ? $article->getThumbnail()->getId() : null
         ]);
     }
 

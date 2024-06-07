@@ -37,7 +37,7 @@ class DraftArticleDetailEditQueryService
             FROM article_detail AS ad
                      INNER JOIN articles AS a ON ad.article_id = a.id
                      INNER JOIN article_draft AS ap ON ad.article_id = ap.article_id
-                     INNER JOIN article_images AS tnai ON ad.thumbnail_id = tnai.id
+                     LEFT JOIN article_images AS tnai ON ad.thumbnail_id = tnai.id
                      LEFT JOIN article_images AS ai ON ad.article_id = ai.article_id
                      LEFT JOIN article_tags AS at ON ad.article_id = at.article_id
             WHERE ap.article_id = :article_id

@@ -9,9 +9,12 @@ use Romira\Zenita\Common\Interfaces\Routes\Route;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\GetIndex;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\GetUsersIdArticlesId;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\GetUsersIdArticlesIdEdit;
+use Romira\Zenita\Feature\Article\Interfaces\Handlers\GetUsersIdDraftArticlesIdEdit;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdArticleIdDelete;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdArticleIdEdit;
 use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdArticles;
+use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdDraftArticles;
+use Romira\Zenita\Feature\Article\Interfaces\Handlers\PostUsersIdDraftArticlesIdEdit;
 use Romira\Zenita\Feature\Auth\Interfaces\Handlers\GetAuthLogin;
 use Romira\Zenita\Feature\Auth\Interfaces\Handlers\GetAuthRegister;
 use Romira\Zenita\Feature\Auth\Interfaces\Handlers\PostAuthLogin;
@@ -40,7 +43,10 @@ class Main
             ->post('/auth/login', new PostAuthLogin())
             ->get('/auth/register', new GetAuthRegister())
             ->post('/auth/register', new PostAuthRegister())
-            ->post('/auth/logout', new PostAuthLogout());
+            ->post('/auth/logout', new PostAuthLogout())
+            ->post('/users/{user_id}/draft-articles', new PostUsersIdDraftArticles())
+            ->get('/users/{user_id}/draft-articles/{article_id}/edit', new GetUsersIdDraftArticlesIdEdit())
+            ->post('/users/{user_id}/draft-articles/{article_id}/edit', new PostUsersIdDraftArticlesIdEdit());
 
         $route->run();
     }

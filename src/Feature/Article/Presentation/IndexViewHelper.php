@@ -130,11 +130,11 @@ class IndexViewHelper extends ViewHelper
                     <p class="text-xs">※タグはカンマ区切りで入力してください</p>
                 </div>
                 <div class="flex gap-8">
-                    <button type="submit" class="px-4 py-1 rounded-lg bg-gray-300 hover:bg-gray-400" data-action="/users/' . $user_id . '/draft-articles">下書き</button>
-                    <button type="submit" class="bg-cyan-400 hover:bg-cyan-500 rounded-lg px-4 py-1" data-action="/users/' . $user_id . '/articles">投稿</button>
+                    <button id="draft-submit-button" type="submit" class="px-4 py-1 rounded-lg bg-gray-300 hover:bg-gray-400" data-action="/users/' . $user_id . '/draft-articles">下書き</button>
+                    <button id="post-submit-button" type="submit" class="bg-cyan-400 hover:bg-cyan-500 rounded-lg px-4 py-1" data-action="/users/' . $user_id . '/articles">投稿</button>
                 </div>
             </form>
-            ' . $this->createSubmitArticleScript();
+            ' . $this->createSubmitArticleScript() . $this->createToggleArticleFormRequiredScript();
     }
 
     private function createArticlesElement(): string
@@ -221,11 +221,16 @@ class IndexViewHelper extends ViewHelper
         return "
             <script>
                 document.addEventListener('click', (e) => {
-                    const images = document.getElementById('images');
-                    if (e.target.id === 'thumbnail') {
-                        images.required = false;
+                    const form = document.forms.namedItem('articleForm');
+                    if (e.target.id === 'draft-submit-button') {
+                        for (const input of form.querySelectorAll('input, textarea')) {
+                            input.required = false;
+                        }
                     } else {
-                        images.required = true;
+                        for (const input of form.querySelectorAll('input, textarea')) {
+                            input.required = true;
+                        }
+                        form.querySelector('input[name=images[]]').required = false;
                     }
                 });
             </script>
