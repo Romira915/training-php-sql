@@ -56,15 +56,15 @@ class DraftArticleDetailEditPageViewHelper extends ViewHelper
             <form id="editArticleForm" class="flex flex-col gap-4 items-center w-fit" action=/users/' . $this->articleDetail->user_id . '/draft-articles/' . $this->articleDetail->article_id . '/edit method="post" enctype="multipart/form-data">
                 <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="title">タイトル</label>
-                    <input class="w-[400px] p-1" type="text" id="title" name="title" maxlength="100" value=' . $this->articleDetail->title . ' required>
+                    <input class="w-[400px] p-1" type="text" id="title" name="title" maxlength="100" value=' . htmlspecialchars($this->articleDetail->title) . ' required>
                 </div>
                 <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="body">本文</label>
-                    <textarea class="w-[400px] h-[' . $bodyHeight . 'px]' . ' p-2 leading-[20px]" id="body" name="body" maxlength="8000" required>' . $this->articleDetail->body . '</textarea>
+                    <textarea class="w-[400px] h-[' . $bodyHeight . 'px]' . ' p-2 leading-[20px]" id="body" name="body" maxlength="8000" required>' . htmlspecialchars($this->articleDetail->body) . '</textarea>
                 </div>
                 <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="thumbnail_image">サムネイル画像</label>
-                    <img class="w-[200px]" src=' . $this->articleDetail->thumbnail_image_url . ' alt="thumbnail_image">
+                    <img class="w-[200px]" src=' . htmlspecialchars($this->articleDetail->thumbnail_image_url) . ' alt="thumbnail_image">
                     <input class="w-[400px]" type="file" id="thumbnail_image" name="thumbnail_image" accept="image/jpeg, image/png, image/gif">
                 </div>
                 <div class="flex flex-col items-start gap-2 justify-between w-full">
@@ -74,7 +74,7 @@ class DraftArticleDetailEditPageViewHelper extends ViewHelper
                 </div>
                 <div class="flex flex-col items-start gap-2 justify-between w-full">
                     <label for="tags">タグ</label>
-                    <input class="w-[400px] p-1" type="text" id="tags" name="tags" required>
+                    <input class="w-[400px] p-1" type="text" id="tags" name="tags" value="' . htmlspecialchars(implode(',', $this->articleDetail->tags)) . '" required>
                     <p class="text-xs">※タグはカンマ区切りで入力してください</p>
                 </div>
                 <div class="flex gap-8">

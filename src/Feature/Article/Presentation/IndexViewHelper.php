@@ -31,7 +31,7 @@ class IndexViewHelper extends ViewHelper
     {
         if ($this->errorMessage) {
             $errorElement = "
-                <p class='text-red-500'>{$this->errorMessage}</p>
+                <p class='text-red-500'>" . htmlspecialchars($this->errorMessage) . "</p>
             ";
         } else {
             $errorElement = '';
@@ -97,7 +97,7 @@ class IndexViewHelper extends ViewHelper
     private function createUserIconElement(CurrentUserDTO $currentUser): string
     {
         return '
-            <img id="logged-in-user-icon" class="" alt="user_icon" title="' . $currentUser->display_name . '" src="' . $currentUser->icon_path . '" alt="user_icon" width="50" height="50">
+            <img id="logged-in-user-icon" class="" alt="user_icon" title="' . htmlspecialchars($currentUser->display_name) . '" src="' . htmlspecialchars($currentUser->icon_path) . '" alt="user_icon" width="50" height="50">
         ';
     }
 
@@ -211,6 +211,22 @@ class IndexViewHelper extends ViewHelper
             <script>
                 document.addEventListener('click', (e) => {
                     document.getElementById('articleForm').action = e.target.getAttribute('data-action');
+                });
+            </script>
+        ";
+    }
+
+    private function createToggleArticleFormRequiredScript(): string
+    {
+        return "
+            <script>
+                document.addEventListener('click', (e) => {
+                    const images = document.getElementById('images');
+                    if (e.target.id === 'thumbnail') {
+                        images.required = false;
+                    } else {
+                        images.required = true;
+                    }
                 });
             </script>
         ";
